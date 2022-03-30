@@ -1,0 +1,11 @@
+{
+  "mongoURI": "mongodb://localhost:27017/alturas1",
+  "jwtSecret": "secret",
+  "githubToken": "",
+  "nodemailer" : {
+  	"host": "mail.smtp2go.com",
+  	"port": 443,
+    "user": "noreply@ymircoin.com",
+    "pass": "ZWN2cHltOHgwdWcw"
+  }
+}

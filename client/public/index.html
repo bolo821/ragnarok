@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="NFT marketplace"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>Ragnarok</title>
+    <style type="text/css">
+      @font-face {
+        font-family: 'somatic-rounded';
+        src: url('/fonts/Somatic-Rounded.otf') format('woff'),
+        url('/fonts/Somatic-Rounded.otf') format('truetype');
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: 'grilled-cheese-toasted';
+        src: url('/fonts/Grilcbto.ttf') format('woff'),
+        url('/fonts/Grilcbto.ttf') format('truetype');
+        font-display: swap;
+      }
+      .newstitle::after {
+        content: "";
+        border-right: 20px solid #005580;
+        border-top: 35px solid transparent;
+        display: block;
+        height: 0px;
+        left: -27px;
+        position: absolute;
+        top: 0;
+        width: 7px;
+        border-right-color: #1b3075;
+      }
+
+      .newstitle::before {
+        content: "";
+        border-left: 20px solid #1b3075;
+        border-top: 35px solid transparent;
+        display: block;
+        height: 0px;
+        right: -27px;
+        position: absolute;
+        top: 0;
+        width: 7px;
+        border-right-color: #1b3075
+      }
+
+      .alert {
+        padding: 0.8rem;
+        margin: 1rem 0;
+        opacity: 0.9;
+        background: var(--light-color);
+        color: #333;
+        position: fixed;
+        z-index: 1200;
+        width: 200px;
+        right: 0;
+        top: 0;
+      }
+
+      .alert-danger {
+        background: var(--danger-color);
+        color: #fff;
+      }
+
+      .alert-primary {
+        background: var(--primary-color);
+        color: #fff;
+      }
+
+      .alert-light {
+        background: var(--light-color);
+        color: #333;
+      }
+
+      .alert-dark {
+        background: var(--dark-color);
+        color: #fff;
+      }
+
+      .alert-success {
+        background: var(--success-color);
+        color: #fff;
+      }
+
+      .alert-white {
+        background: #fff;
+        color: #333;
+        border: #ccc solid 1px;
+      }
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+          'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        /*background-color: #d1d1d1;*/
+      }
+
+      code {
+        font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+          monospace;
+      }
+
+      a {
+        text-decoration: none;
+        color: #c9cacc;
+      }
+
+      a:hover {
+        /*opacity: 0.8;*/
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+</html>
