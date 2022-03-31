@@ -4,4 +4,5 @@ export const minter = "0x94f9B4DBA49E2Df39cd95bE1886f1e9480AdFDFC";
 export const minterAddress = "0x94f9B4DBA49E2Df39cd95bE1886f1e9480AdFDFC";
 export const RPC_url = 'https://data-seed-prebsc-1-s1.binance.org:8545/';
 export const MainChainID = 97;
-export const recaptcha = '6Lc-TEseAAAAAPL6mUmM4LBxPhJs7L692IERnLtA';
+// export const recaptcha = '6Lc-TEseAAAAAPL6mUmM4LBxPhJs7L692IERnLtA';
+export const recaptcha = '6LeE9iYfAAAAANM2_qazGNgkqI5D7f9yTLI4o6bd';
