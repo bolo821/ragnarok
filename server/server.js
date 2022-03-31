@@ -2,11 +2,20 @@ const express = require('express');
 const path = require('path');
 const dotenv = require('dotenv');
 const http = require('http');
+const fs = require('fs');
+
+const https = require('https');
+var https_options = {
+  key: fs.readFileSync(path.join(__dirname, "sarahserver.xyz.key")),
+  cert: fs.readFileSync(path.join(__dirname, "sarahserver_xyz.crt")),
+  ca: [
+        fs.readFileSync(path.join(__dirname, "sarahserver.xyz.csr")),
+        fs.readFileSync(path.join(__dirname, "sarahserver_xyzss.crt")),
+      ]
+};
 
 const cors = require('cors');
-
 dotenv.config();
-
 const app = express();
 
 // Init Middleware
@@ -25,16 +34,28 @@ app.use('/api/minter', require('./routes/api/minter'));
 app.use('/api/mode', require('./routes/api/mode'));
 
 app.use(express.static(path.join(__dirname, '/public')));
-
 const PORT = process.env.PORT;
 
-const server = http.createServer(app);
-options = {
-  cors: true,
-  origins: "*",
-}
-require('./socketServer')(server, options);
+if (process.env.NODE_ENV === 'production') {
+  const httpsServer = https.createServer(https_options, app);
+	options = {
+		cors: true,
+		origins: "*",
+	}
+	require('./socketServer')(httpsServer, options);
 
-server.listen(PORT, () => {
-  console.log(`Server is listening at port ${PORT}`);
-})
+	httpsServer.listen(PORT, () => {
+		console.log(`HTTPS Server running on port ${PORT}`);
+	});
+} else {
+  const server = http.createServer(app);
+  options = {
+    cors: true,
+    origins: "*",
+  }
+  require('./socketServer')(server, options);
+  
+  server.listen(PORT, () => {
+    console.log(`HTTP Server is running on port ${PORT}`);
+  });
+}
