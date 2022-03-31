@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { connect } from 'react-redux';
-import { useHistory, Redirect } from "react-router-dom";
-
+import { Redirect } from "react-router-dom";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -16,24 +14,12 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Modal from '@mui/material/Modal';
-import TextareaAutosize from '@mui/base/TextareaAutosize';
-
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-// import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch';
-import ImageSearchIcon from '@mui/icons-material/ImageSearch';
-
 import { styled } from '@mui/material/styles';
-
 import { setAlert } from '../../actions/alert';
 import { getLogs } from '../../actions/logs';
-
 import Sidebar from './adminSidebar';
-
 import { AdminLayout, AdminBody, AdminMainBody, AuthButton, AdminTextField } from '../../components/adminlayout/LayoutItem';
-import AdminHeader from '../../components/adminlayout/AdminHeader';
-
-import BalanceItem from './dashboard/BalanceItem';
-import { getUsers, sendMailByAdmin,sendCoinByAdmin } from '../../actions/user';
+import { getUsers, sendCoinByAdmin } from '../../actions/user';
 
 
 
@@ -110,7 +96,6 @@ function Tokens({ auth, logs, users, setAlert, getLogs, getUsers, sendCoinByAdmi
     }
     const handleMailClose = () => { setOpenCoin(false); setAmount(0) }
     const handleSend = () => {
-    
         sendCoinByAdmin(id, amount, type);
     }
 

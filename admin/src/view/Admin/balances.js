@@ -99,18 +99,23 @@ function Balances() {
             let data = [];
             for (let i=0; i<users.length; i++) {
                 if (users[i].wallet) {
-                    const resymir = await ymirContract._walletBalance(users[i].wallet);
-                    const resrok = await rokContract._walletBalance(users[i].wallet);
-                    let amountymir = getBalanceAmount(resymir);
-                    let amountrok = getBalanceAmount(resrok);
-                    data.push({
-                        account_id: users[i].account_id,
-                        email: users[i].email,
-                        wallet: users[i].wallet,
-                        userid: users[i].userid,
-                        ymir: amountymir,
-                        rok: amountrok,
-                    });
+                    try {
+                        const resymir = await ymirContract._walletBalance(users[i].wallet);
+                        const resrok = await rokContract._walletBalance(users[i].wallet);
+                        let amountymir = getBalanceAmount(resymir);
+                        let amountrok = getBalanceAmount(resrok);
+                        data.push({
+                            account_id: users[i].account_id,
+                            email: users[i].email,
+                            wallet: users[i].wallet,
+                            userid: users[i].userid,
+                            ymir: amountymir,
+                            rok: amountrok,
+                        });
+                    } catch (err) {
+                        console.log('error:', err);
+                        continue;
+                    }
                 }
             }
             setWalletBalances(data);

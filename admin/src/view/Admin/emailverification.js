@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { SET_LOADER } from '../../actions/types';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -58,9 +59,15 @@ function Emailverification() {
 
   const onVerify = async (e) => {
     e.preventDefault();
-
     dispatch(emailverify(code, history));
   };
+
+  useEffect(() => {
+    dispatch({
+      type: SET_LOADER,
+      payload: false,
+    });
+  }, []);
 
   return (
     <>
