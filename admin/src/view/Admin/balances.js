@@ -60,6 +60,7 @@ const SearchBox = styled(TextField)(({ theme }) => ({
     '& input': {
         background: 'rgba(224, 224, 224, 1)',
         borderRadius: '2rem',
+        padding: '0.7rem 1.2rem',
     },
 }));
 
@@ -202,7 +203,7 @@ function Balances() {
                                 >
                                     <Stack direction='row' alignItems={'center'} justifyContent="space-between" sx={{ mb: 2 }}>
                                         <Typography component='h5' variant='h5'>TOKEN BALANCES</Typography>
-                                        <SearchBox onChange={e => setSearch(e.target.value)} value={search} name="search" />
+                                        <SearchBox onChange={e => setSearch(e.target.value)} value={search} name="search" placeholder='Search...' />
                                     </Stack>
                                     <TableContainer component={Paper}>
                                         <Table sx={{ minWidth: 700 }} aria-label="customized table">
