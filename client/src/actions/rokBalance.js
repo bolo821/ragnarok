@@ -99,26 +99,22 @@ export const getAccountBalance = (account_id) => async dispatch => {
 // }
 
 export const getFundBalance = (account_id) => async dispatch => {
-  try {
-    const res = await api.get('/fund/' + account_id + '/ROK');
-    // const res = await rokContract.balanceOf(account);
-    // let amount = getBalanceAmount(res);
-    dispatch({
-      type: GET_ROK_FUND_BALANCE,
-      payload: res.data
-    });
-    return res.data.value;
-  } catch (err) {
-    console.log(err)
-    return 0;
-  }
+  // try {
+  //   const res = await api.get('/fund/' + account_id + '/ROK');
+  //   dispatch({
+  //     type: GET_ROK_FUND_BALANCE,
+  //     payload: res.data
+  //   });
+  //   return res.data.value;
+  // } catch (err) {
+  //   console.log(err)
+  //   return 0;
+  // }
 };
 
 export const updateFunndBalance = (data, account_id) => async dispatch => {
   try {
     const res = await api.post('/fund/updatebalance', data);
-    dispatch(getFundBalance(account_id));
-    console.log(res);
     return res.data;
     // dispatch(setAlert('Succefully withdrawed', 'success'));
   } catch (err) {

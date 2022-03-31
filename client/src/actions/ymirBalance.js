@@ -138,19 +138,17 @@ export const updateTempBalance = (data, account_id) => async dispatch => {
 // }
 
 export const getFundBalance = (account_id) => async dispatch => {
-  try {
-    const res = await api.get('/fund/' + account_id + '/YMIR');
-    // const res = await ymirContract.balanceOf(account);
-    // let amount = getBalanceAmount(res);
-    dispatch({
-      type: GET_YMIR_FUND_BALANCE,
-      payload: res.data
-    });
-    return res.data.value;
-  } catch (err) {
-    console.log(err)
-    return 0;
-  }
+  // try {
+  //   const res = await api.get('/fund/' + account_id + '/YMIR');
+  //   dispatch({
+  //     type: GET_YMIR_FUND_BALANCE,
+  //     payload: res.data
+  //   });
+  //   return res.data.value;
+  // } catch (err) {
+  //   console.log(err)
+  //   return 0;
+  // }
 };
 
 // Update FundTemp Balance

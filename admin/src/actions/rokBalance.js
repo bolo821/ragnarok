@@ -117,8 +117,6 @@ export const getFundBalance = (account_id) => async dispatch => {
 export const updateFunndBalance = (data, account_id) => async dispatch => {
   try {
     const res = await api.post('/fund/updatebalance', data);
-    dispatch(getFundBalance(account_id));
-    console.log(res);
     return res.data;
     // dispatch(setAlert('Succefully withdrawed', 'success'));
   } catch (err) {

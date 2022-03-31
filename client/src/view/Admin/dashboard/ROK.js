@@ -10,7 +10,7 @@ import Modal from '@mui/material/Modal';
 
 import { styled } from '@mui/material/styles';
 import { setAlert } from '../../../actions/alert';
-import { updateTempBalance, updateContractBalance, getWalletBalance, getContractBalance, updateFunndBalance, getFundBalance, getAccountBalance } from '../../../actions/rokBalance';
+import { updateTempBalance, updateContractBalance, getWalletBalance, getContractBalance, updateFunndBalance, getAccountBalance } from '../../../actions/rokBalance';
 import { setTverify, transactionverify, resend } from '../../../actions/auth';
 import { openModal } from '../../../actions/modal';
 
@@ -256,7 +256,6 @@ function ROKTransaction() {
           if (flag === true) {
       			data.message = `You attempted to transfer ${withdrawFund} RoK Points into your Game Account Wallet.`;
             dispatch(updateTempBalance(data, user.account_id));
-            await dispatch(getFundBalance(user.account_id));
             setWithdrawFund(0);
             dispatch({ type: 'SET_LOADER', payload: false })
             dispatch(openModal(true, `Transfer to Game. ${withdrawFund} RoK Points was successfully transfered into your Game Account Wallet.`));
