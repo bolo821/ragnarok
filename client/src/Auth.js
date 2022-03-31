@@ -14,7 +14,7 @@ const Auth = props => {
         if (localStorage.getItem('auth-token-rt')) {
             dispatch(autoLogin(localStorage.getItem('auth-token-rt'), history));
         } else {
-            history.push('/login');
+            history.push('/');
         }
     }, [ dispatch, history ]);
 
