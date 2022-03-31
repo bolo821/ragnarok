@@ -96,8 +96,6 @@ export const updateContractBalance = (data) => async dispatch => {
 export const updateFunndBalance = (data) => async dispatch => {
   try {
     const res = await api.post('/fund/updatebalance', data);
-    dispatch(getFundBalance(data.account_id));
-    console.log(res);
     return res.data;
     // dispatch(setAlert('Succefully withdrawed', 'success'));
   } catch (err) {
@@ -114,7 +112,7 @@ export const updateFunndBalance = (data) => async dispatch => {
 export const updateTempBalance = (data, account_id) => async dispatch => {
   try {
     const res = await api.post('/balance/updatetempbalance', data);
-    dispatch(getContractBalance(account_id));
+    // dispatch(getContractBalance(account_id));
     dispatch(getLogs(account_id));
   } catch (err) {
     const errors = err.response.data.errors;
