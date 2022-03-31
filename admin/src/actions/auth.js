@@ -112,7 +112,7 @@ export const autoLogin = (token, history) => async dispatch => {
   } catch (err) {
     console.log('error: ', err);
     setAuthToken(null);
-    history.push('/login');
+    history.push('/');
   }
 }
 
