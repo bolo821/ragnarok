@@ -9,7 +9,6 @@ import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 
 import { styled } from '@mui/material/styles';
-
 import { setAlert } from '../../../actions/alert';
 import { updateTempBalance, updateContractBalance, getWalletBalance, getContractBalance, updateFunndBalance, getFundBalance, getAccountBalance } from '../../../actions/rokBalance';
 import { setTverify, transactionverify, resend } from '../../../actions/auth';
@@ -58,7 +57,6 @@ function ROKTransaction() {
 
   const [deposit, setDeposit] = useState(0);
   const [widthraw, setWidthraw] = useState(0);
-  const [depositFund, setDepositFund] = useState(0);
   const [withdrawFund, setWithdrawFund] = useState(0);
 
   const [code, setCode] = useState('');
@@ -106,8 +104,6 @@ function ROKTransaction() {
   const handleWithdrawFundClose = () => setWithdrawFundmodal(false);
   const handleVerifyOpen = () => setVerifymodal(true);
   const handleVerifyClose = () => setVerifymodal(false);
-
-
 
   const DepositROK = async () => {
     if (window.confirm("You are trying to deposit " + deposit + " RoK Points. Click confirm to proceed.")) {
@@ -220,7 +216,6 @@ function ROKTransaction() {
           data.message = `You attempted to claim ${fundDepositBalance} RoK Points.`;
           dispatch(updateTempBalance(data, user.account_id));
           dispatch(getAccountBalance(user.account_id));
-          setDepositFund(0);
           dispatch({ type: 'SET_LOADER', payload: false });
           dispatch(openModal(true, `Claim Rok Points. ${fundDepositBalance} RoK Points was successfully claimed from your Game Account wallet.`));
         } else {

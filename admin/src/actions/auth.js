@@ -147,6 +147,7 @@ export const emailverify = (code, history) => async (dispatch, getState) => {
       dispatch(setAlert('Your email is successfully verified.', 'success'));
 
       const decoded = jwt_decode(res.data.token);
+      SOCKET.emit('SET_SESSION', decoded.user.account_id);
       dispatch({
         type: USER_LOADED,
         payload: decoded.user,

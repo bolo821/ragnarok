@@ -10,10 +10,13 @@ module.exports = (server, options) => {
 			if (Object.values(users).includes(account_id)) {
 				callback(false);
 			} else {
-				users = { ...users, [ socket.id ]: account_id };
-				User.setSession(account_id, 1);
 				callback(true);
 			}
+		});
+
+		socket.on('SET_SESSION', account_id => {
+			User.setSession(account_id, 1);
+			users = { ...users, [ socket.id ]: account_id };
 		});
 
 		socket.on('disconnect', () => {
@@ -46,6 +49,15 @@ module.exports = (server, options) => {
 			socket.broadcast.emit('MOVE_TO_MAINTENANCE_MODE');
 			users = { [socket.id]: users[socket.id] };
 			users_in_transaction = [];
+		});
+
+		socket.on('FORCE_LOGOUT', account_id => {
+			for (ele in users) {
+				if (users[ele] === account_id) {
+					io.to(ele).emit('FORCE_LOGOUT');
+					break;
+				}
+			}
 		})
 	});
 }

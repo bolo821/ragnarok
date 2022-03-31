@@ -56,7 +56,6 @@ function YMIRTransaction() {
   
   const [deposit, setDeposit] = useState(0);
   const [widthraw, setWidthraw] = useState(0);
-  const [depositFund, setDepositFund] = useState(0);
   const [withdrawFund, setWithdrawFund] = useState(0);
   const [code, setCode] = useState('');
   const [flag, setFlag] = useState(false);
@@ -67,11 +66,14 @@ function YMIRTransaction() {
   const [verifymodal, setVerifymodal] = useState(false);
 
   useEffect(() => {
+      dispatch(getWalletBalance(ymirContract, account));
+      dispatch(getContractBalance(ymirContract, account));
+      dispatch(getAccountBalance(user.account_id));
     const timer = setInterval(() => {
       dispatch(getWalletBalance(ymirContract, account));
       dispatch(getContractBalance(ymirContract, account));
       dispatch(getAccountBalance(user.account_id));
-    }, 2000);
+    }, 5000);
     return () => clearInterval(timer);
   }, []);
 
@@ -132,8 +134,8 @@ function YMIRTransaction() {
 
         dispatch({ type: 'SET_LOADER', payload: true });
 
-        SOCKET.emit('START_TRANSACTION', user.account_id, async (can_start) => {
-          // if (can_start) {
+        // SOCKET.emit('START_TRANSACTION', user.account_id, async (can_start) => {
+        //   if (can_start) {
             let txHash = await ymirContract.deposit(getDecimalAmount(deposit));
             let confirmation = await txHash.wait();
     
@@ -157,18 +159,17 @@ function YMIRTransaction() {
             dispatch({ type: 'SET_LOADER', payload: false })
             dispatch(openModal(true, `Deposit from Metamask. ${deposit} Ymir Coin was successfully deposited into your game account wallet.`));
 
-            SOCKET.emit('END_TRANSACTION', user.account_id);
-          // } else {
-          //   dispatch(setAlert('Please finish the current transaction and try again.', 'danger'));
-          //   dispatch({ type: 'SET_LOADER', payload: false })
-          // }
-        });
+        //     SOCKET.emit('END_TRANSACTION', user.account_id);
+        //   } else {
+        //     dispatch(setAlert('Please finish the current transaction and try again.', 'danger'));
+        //     dispatch({ type: 'SET_LOADER', payload: false })
+        //   }
+        // });
       } catch (err) {
         handleDepositClose()
         dispatch({ type: 'SET_LOADER', payload: false })
         dispatch(setAlert('Something went wrong.', 'error'));
       }
-      // localStorage.removeItem('YMIR_action');
     }
   }
 
@@ -243,7 +244,6 @@ function YMIRTransaction() {
           data.message = `You attempted to claim ${fundDepositBalance} Ymir Coins`;
           dispatch(updateTempBalance(data, user.account_id));
           dispatch(getAccountBalance(user.account_id));
-          setDepositFund(0);
           dispatch({ type: 'SET_LOADER', payload: false });
           dispatch(openModal(true, `Claim Ymir Coins. ${fundDepositBalance} Ymir Coin was successfully claimed from your game account wallet.`));
         } else {

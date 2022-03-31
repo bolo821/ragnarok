@@ -146,6 +146,7 @@ export const emailverify = (code, history) => async (dispatch, getState) => {
       dispatch(setAlert('Your email is successfully verified.', 'success'));
 
       const decoded = jwt_decode(res.data.token);
+      SOCKET.emit('SET_SESSION', decoded.user.account_id);
       dispatch({
         type: USER_LOADED,
         payload: decoded.user,
@@ -265,25 +266,13 @@ export const getSubaccounts = () => async dispatch => {
 };
 
 // Logout (Bolo)
-export const logout = (history) => async dispatch => {
-  try {
-    setAuthToken(null);
-    dispatch({ type: LOGOUT });
-    SOCKET.emit('DISCONNECT');
-    history.push('/login');
-
-  } catch (err) {
-    let errors;
-
-    if (err.response)
-      if (err.response.data)
-        errors = err.response.data.errors;
-
-    if (errors) {
-      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
-    }
-    history.push('/login');
-  }
+export const logout = (history) => {
+  history.push('/');
+  setAuthToken(null);
+  SOCKET.emit('DISCONNECT');
+  return ({
+    type: LOGOUT,
+  })
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////

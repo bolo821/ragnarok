@@ -21,6 +21,7 @@ import { styled } from '@mui/material/styles';
 import Sidebar from './adminSidebar';
 import { AdminLayout, AdminBody, AdminMainBody, AuthButton } from '../../components/adminlayout/LayoutItem';
 import { getAllUsers, updateUser } from '../../actions/user';
+import { SOCKET } from '../../utils/api';
 
 const DashboardBody = styled(Box)(({ theme }) => ({
     padding: '26px',
@@ -113,6 +114,7 @@ function Users() {
     const handleUpdate = () => {
         if (ban && user.state === 0) {
             dispatch(updateUser(user.account_id, 5));
+            SOCKET.emit('FORCE_LOGOUT', user.account_id);
         } else if (!ban && user.state === 5) {
             dispatch(updateUser(user.account_id, 0));
         }
