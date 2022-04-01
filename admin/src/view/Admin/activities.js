@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from "react-router-dom";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -8,13 +8,12 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import Pagination from '@mui/material/Pagination';
 import { styled } from '@mui/material/styles';
-import { setAlert } from '../../actions/alert';
-import { getLogs } from '../../actions/logs';
 import Sidebar from './adminSidebar';
 import { AdminLayout, AdminBody, AdminMainBody } from '../../components/adminlayout/LayoutItem';
 import LogItem from './dashboard/LogItem';
 import { useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
+import { getLogs } from '../../actions/logs';
 
 const injected = new InjectedConnector({
   supportedChainIds: [ 56, 97 ],
@@ -27,7 +26,10 @@ const DashboardBody = styled(Box)(({ theme }) => ({
   height: 'calc(100% - 50px)',
 }));
 
-function Activities({auth, logs, setAlert, getLogs}) {
+function Activities() {
+  const dispatch = useDispatch();
+  const auth = useSelector(state => state.auth);
+  const logs = useSelector(state => state.logs);
   const { user, isAuthenticated } = auth;
   const { loglist } = logs;
 
@@ -45,7 +47,7 @@ function Activities({auth, logs, setAlert, getLogs}) {
   }, [account])
 
   useEffect(() => {
-    getLogs(user.account_id);
+    dispatch(getLogs(user.account_id));
   }, [getLogs])
 
   if (isAuthenticated) {
@@ -99,9 +101,4 @@ function Activities({auth, logs, setAlert, getLogs}) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  auth: state.auth,
-  logs: state.logs
-});
-
-export default connect(mapStateToProps, { setAlert, getLogs })(Activities);
+export default Activities;

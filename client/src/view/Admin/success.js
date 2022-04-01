@@ -30,7 +30,6 @@ function SuccessPage({auth}) {
     <>
       <AuthLayout>
         <AdminBody direction='row'>
-          {/*<Sidebar />*/}
         	<Box sx={{width: '100%'}}>
             <VerifyBody justifyContent='center'>
               <Box sx={formstyle}>

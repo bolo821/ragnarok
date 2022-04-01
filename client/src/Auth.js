@@ -11,7 +11,6 @@ const Auth = props => {
     const { children } = props;
     const dispatch = useDispatch();
     const history = useHistory();
-    gHistory = history;
 
     useEffect(() => {
         SOCKET.on('FORCE_LOGOUT', () => {

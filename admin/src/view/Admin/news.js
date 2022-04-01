@@ -67,9 +67,9 @@ function News() {
   const dispatch = useDispatch();
   const news = useSelector(state => state.news.news);
 
-  const [ image, setImage ] = useState(null);
+  const [ image, setImage ] = useState('');
   const [ link, setLink ] = useState('');
-  const [ id, setId ] = useState(null);
+  const [ id, setId ] = useState('');
   const [ displayData, setDisplayData ] = useState([]);
 
   const [ showModal, setShowModal ] = useState(false);
@@ -154,9 +154,9 @@ function News() {
 
                   <ImageContainer>
                     { displayData.map((row, i) => {
-                      return (<Grid sx={{ display: 'flex', marginBottom: '3rem'}}>
+                      return (<Grid item key={i} sx={{ display: 'flex', marginBottom: '3rem'}}>
                       { row.map((ele, j) => {
-                        return <Grid key={i*3 + j} xs={4} sx={{textAlign: 'center'}} onClick={() => handleImageChange(ele)}>
+                        return <Grid item key={i*3 + j} xs={4} sx={{textAlign: 'center'}} onClick={() => handleImageChange(ele)}>
                             <img src={ele.path} alt="img" width='70%' height='100%' />
                             <Typography id="keep-mounted-modal-title" variant="h6" color='#985e03' fontWeight={600} align='center' component="h6">
                               {ele.link}

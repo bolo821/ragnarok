@@ -12,9 +12,9 @@ import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import { useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
-import { setAlert } from '../../actions/alert';
 import { register } from '../../actions/auth';
 import { AuthWrapper, AdminBody, AdminTextField, AuthButton, formstyle } from '../../components/adminlayout/LayoutItem';
+import { toast } from 'react-toastify';
 
 const LoginButton = styled(Button)(({ theme }) => ({
   marginTop: "20px",
@@ -36,22 +36,26 @@ function Register() {
   const dispatch = useDispatch();
   const { account, activate, active } = useWeb3React();
   const history = useHistory();
+  const [ flag, setFlag ] = useState(true);
 
   const [formData, setFormData] = useState({
-    userid: '',
+    username: '',
     email: '',
     password: '',
     password2: '',
     address: ''
   });
 
-  const { userid, email, password } = formData;
+  const { username, email, password } = formData;
   const [ recaptcha, setRecaptcha ] = useState(!parseInt(process.env.REACT_APP_CAPCHA));
 
   const onChange = (e) => {
-    if(e.target.name === "userid"){
-      if(e.target.value.match(/\W/)){
-        setAlert('Do not write the special character', 'warning')
+    if (e.target.name === "username") {
+      if (e.target.value.match(/\W/)) {
+        if (flag) {
+          toast.warn('Do not write the special character');
+          setFlag(false);
+        }
         return;
       }
     }
@@ -59,7 +63,7 @@ function Register() {
   }
 
   const validate = () => {
-    return formData.userid !== '' && formData.email !== '' && formData.password !== '' && formData.password2 !== '' && recaptcha;
+    return formData.username !== '' && formData.email !== '' && formData.password !== '' && formData.password2 !== '' && recaptcha;
   }
 
   useEffect(() => {
@@ -79,22 +83,20 @@ function Register() {
   const onRegister = async (e) => {
     e.preventDefault();
     if (!validate()) {
-      dispatch(setAlert('Please fill all fields.', 'warning'));
+      toast.warn('Please fill all fields.');
     } else if (formData.password !== formData.password2) {
-      dispatch(setAlert('Passwords do not match', 'warning'));
+      toast.warn('Passwords do not match.');
     } else if (formData.address === '') {
-      dispatch(setAlert('Please connect your wallet.', 'warning'));
+      toast.warn('Please connect your wallet.');
     } else {
-      dispatch(register({ userid, email, password, wallet: account }, history));
+      dispatch(register({ userid: username, email, password, wallet: account }, history));
     }
   };
 
   return (
     <>
-      {/*<AdminHeader />*/}
       <AuthWrapper>
         <AdminBody direction='row'>
-          {/*<Sidebar />*/}
           <Box sx={{ width: '100%' }}>
             <RegisterBody justifyContent='center'>
               <Box sx={formstyle}>
@@ -117,7 +119,7 @@ function Register() {
                 <form onSubmit={onRegister}>
                   <Grid container>
                     <Grid item xs={12}>
-                      <AdminTextField fullWidth label="Username" size='small' name="userid" value={formData.userid} onChange={onChange} disabled={!account} />
+                      <AdminTextField fullWidth label="User Name" size='small' name="username" value={formData.username} onChange={onChange} disabled={!account} />
                     </Grid>
                   </Grid>
 

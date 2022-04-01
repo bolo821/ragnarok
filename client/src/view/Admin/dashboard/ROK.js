@@ -8,19 +8,22 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
+
 import { styled } from '@mui/material/styles';
-import { setAlert } from '../../../actions/alert';
 import { updateTempBalance, updateContractBalance, getWalletBalance, getContractBalance, updateFunndBalance, getAccountBalance } from '../../../actions/rokBalance';
 import { setTverify, transactionverifyROK, resend } from '../../../actions/auth';
 import { openModal } from '../../../actions/modal';
+
 import { rokaddress, minterAddress } from '../../../config';
 import { useContract } from '../../../hooks/useContract';
 import { getMinterContract } from '../../../utils/contracts';
 import ROKABI from '../../../services/abis/ROK.json';
+
 import { useWeb3React } from '@web3-react/core';
 import { AuthButton, AdminTextField, VerifyTextfieldWrap, VerifyTextfield, VerifyButton, formstyle } from '../../../components/adminlayout/LayoutItem';
 import CountDown from '../../../components/CountDown';
 import { getDecimalAmount } from '../../../utils/formatBalance';
+import { toast } from 'react-toastify';
 
 const DepositButton = styled(Button)(({ theme }) => ({
   height: '30px',
@@ -65,7 +68,6 @@ function ROKTransaction() {
   const [depositFundmodal, setDepositFundmodal] = useState(false);
   const [withdrawFundmodal, setWithdrawFundmodal] = useState(false);
   const [verifymodal, setVerifymodal] = useState(false);
-
 
 
   useEffect(() => {
@@ -113,19 +115,19 @@ function ROKTransaction() {
     if (window.confirm("You are trying to deposit " + deposit + " RoK Points. Click confirm to proceed.")) {
       try {
         if (parseFloat(deposit) <= 0) {
-          dispatch(setAlert('Please Input token Balance again.', 'warning'));
+          toast.warn('Please Input token Balance again.');
           return;
         }
         if (parseFloat(deposit) > parseFloat(walletBalance)) {
-          dispatch(setAlert('Please Input correct token Balance.', 'warning'));
+          toast.warn('Please Input correct token Balance.');
           return;
         }
         if (!verifyNumberByDecimal(deposit, 18)) {
-          dispatch(setAlert('The number is exceeding the decimal.', 'warning'));
+          toast.warn('The number is exceeding the decimal.');
           return;
         }
 
-        dispatch(setAlert('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.', 'warning', 10000));
+        toast.warn('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.');
         handleDepositClose()
         dispatch({ type: 'SET_LOADER', payload: true })
         let txHash = await rokContract.deposit(getDecimalAmount(deposit));
@@ -153,8 +155,8 @@ function ROKTransaction() {
 
       } catch (err) {
         handleDepositClose()
-        dispatch({ type: 'SET_LOADER', payload: false })
-        dispatch(setAlert('Something went wrong.', 'error'));
+        dispatch({ type: 'SET_LOADER', payload: false });
+        toast.error('Something went wrong.');
       }
     }
   }
@@ -163,15 +165,15 @@ function ROKTransaction() {
     if (window.confirm("You are trying to deposit " + widthraw + " RoK Points. Click confirm to proceed.")) {
       try {
         if (parseFloat(widthraw) <= 0 || parseFloat(contractBalance) < parseFloat(widthraw)) {
-          dispatch(setAlert('Please Input token Balance again.', 'warning'));
+          toast.warn('Please Input token Balance again.');
           return;
         }
         if (!verifyNumberByDecimal(widthraw, 18)) {
-          dispatch(setAlert('The number is exceeding the decimal.', 'warning'));
+          toast.warn('The number is exceeding the decimal.');
           return;
         }
 
-        dispatch(setAlert('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.', 'warning', 10000));
+        toast.warn('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.');
         handleWithdrawClose();
         dispatch({ type: 'SET_LOADER', payload: true })
         let txHash = await rokContract.withdraw(getDecimalAmount(widthraw));
@@ -197,7 +199,7 @@ function ROKTransaction() {
       } catch (err) {
         dispatch({ type: 'SET_LOADER', payload: false })
         handleWithdrawClose();
-        dispatch(setAlert('Something went wrong.', 'error'));
+        toast.warn('Something went wrong.');
       }
     }
   }
@@ -207,15 +209,15 @@ function ROKTransaction() {
       try {
         let fundDepositBalance = await dispatch(getAccountBalance(user.account_id));
         if (parseFloat(fundDepositBalance) <= 0) {
-          dispatch(setAlert('Please Token Balance again.', 'warning'));
+          toast.warn('Please Token Balance again.');
           return;
         }
         if (!verifyNumberByDecimal(fundDepositBalance, 18)) {
-          dispatch(setAlert('The number is exceeding the decimal.', 'warning'));
+          toast.warn('The number is exceeding the decimal.');
           return;
         }
 
-        dispatch(setAlert('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.', 'warning', 10000));
+        toast.warn('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.');
         handleDepositFundClose()
         dispatch({ type: 'SET_LOADER', payload: true })
         let data = {
@@ -236,12 +238,12 @@ function ROKTransaction() {
           dispatch(openModal(true, `Claim Rok Points. ${fundDepositBalance} RoK Points was successfully claimed from your Game Account wallet.`));
         } else {
           dispatch({ type: 'SET_LOADER', payload: false })
-          dispatch(setAlert('Something went wrong.', 'error'));
+          toast.error('Something went wrong.');
         }
       } catch (err) {
         handleDepositFundClose()
         dispatch({ type: 'SET_LOADER', payload: false })
-        dispatch(setAlert('Something went wrong.', 'error'));
+        toast.error('Something went wrong.');
       }
     }
   }
@@ -250,15 +252,15 @@ function ROKTransaction() {
     if (window.confirm("You are trying to Transfer " + withdrawFund + " Rok Points into your Game Account Wallet. Click confirm to proceed.")) {
       try {
         if (parseFloat(withdrawFund) <= 0 || parseFloat(contractBalance) < parseFloat(withdrawFund)) {
-          dispatch(setAlert('Please Input token Balance again.', 'warning'));
+          toast.warn('Please Input token Balance again.');
           return;
         }
         if (!verifyNumberByDecimal(withdrawFund, 18)) {
-          dispatch(setAlert('The number is exceeding the decimal.', 'warning'));
+          toast.warn('The number is exceeding the decimal.');
           return;
         }
 
-        dispatch(setAlert('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.', 'warning', 10000));
+        toast.warn('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.');
         dispatch({ type: 'SET_LOADER', payload: true })
         handleWithdrawFundClose();
         
@@ -281,17 +283,17 @@ function ROKTransaction() {
             dispatch(openModal(true, `Transfer to Game. ${withdrawFund} RoK Points was successfully transfered into your Game Account Wallet.`));
           } else {
             dispatch({ type: 'SET_LOADER', payload: false })
-            dispatch(setAlert('Something went wrong.', 'error'));
+            toast.error('Something went wrong.');
           }
         } else {
           dispatch({ type: 'SET_LOADER', payload: false })
-          dispatch(setAlert('Something went wrong.', 'error'));
+          toast.error('Something went wrong.');
         }
 
       } catch (err) {
         dispatch({ type: 'SET_LOADER', payload: false })
         handleWithdrawFundClose();
-        dispatch(setAlert('Something went wrong.', 'error'));
+        toast.error('Something went wrong.');
       }
     }
   }

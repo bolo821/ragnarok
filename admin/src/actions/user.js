@@ -1,5 +1,5 @@
+import { toast } from 'react-toastify';
 import api from '../utils/api';
-import { setAlert } from './alert';
 import {
   GET_USER
 } from './types';
@@ -45,7 +45,7 @@ export const sendMailByAdmin  = (email, title, content) => async dispatch => {
   }catch(err){
     const errors = err.response.data.errors;
     if (errors) {
-      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+      errors.forEach(error => toast.error(error.msg));
     }
   }
 }
@@ -54,11 +54,11 @@ export const sendCoinByAdmin  = (account_id, amount, token) => async dispatch =>
   try{
     const body = {account_id, amount, token};
     await api.post('/users/coin', body);
-    dispatch(setAlert('Succss send Coin', 'success'));
+    toast.success('Succss send Coin');
   }catch(err){
     const errors = err.response.data.errors;
     if (errors) {
-      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+      errors.forEach(error => toast.error(error.msg));
     }
   }
 }

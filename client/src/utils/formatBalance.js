@@ -1,9 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { BIG_TEN } from './bigNumber'
 
-/**
- * Take a formatted amount, e.g. 15 BNB and convert it to full decimal value, e.g. 15000000000000000
- */
 export const getDecimalAmount = (amount, decimals = 18) => {
   amount = amount.toString();
   const integerPart = amount.split('.')[0];

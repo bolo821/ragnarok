@@ -7,9 +7,9 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Spinner from '../layout/Spinner';
-import { setAlert } from '../../actions/alert';
 import { useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
+import { toast } from 'react-toastify';
 
 const injected = new InjectedConnector({
   supportedChainIds: [ 56, 97 ],
@@ -121,16 +121,14 @@ export const formstyle = {
 };
 
 function AdminLayoutCom({ children }) {
-  const dispatch = useDispatch();
   const authState = useSelector(state => state.auth);
   const { user, isAuthenticated } = authState;
   const {account, activate, active} = useWeb3React();
-
   const [auth, setAuth] = useState(false);
 
   useEffect(() => {
     if (!account) {
-      dispatch(setAlert('Please connect to your wallet', 'warning'));
+      toast.warn('Please connect to your wallet');
       activate(injected);
     }
   }, [ account ])
@@ -159,16 +157,14 @@ function AdminLayoutCom({ children }) {
 }
 
 function AuthLayoutCom({ children }) {
-  const dispatch = useDispatch();
   const authState = useSelector(state => state.auth);
   const { user, isAuthenticated } = authState;
   const {account, activate, active} = useWeb3React();
-
   const [auth, setAuth] = useState(false);
 
   useEffect(() => { // check current wallet is exist in database
     if(!account) {
-      dispatch(setAlert('Please connect to your wallet', 'warning'));
+      toast.warn('Please connect to your wallet');
       activate(injected);
     }
   }, [ account ])

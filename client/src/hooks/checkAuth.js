@@ -1,10 +1,11 @@
 /* eslint-disable */
-import {useEffect, useRef} from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useWeb3React } from '@web3-react/core';
 
-export default function CheckAuth(auth, user) {
+function CheckAuth(auth, user) {
 	const {account, active} = useWeb3React();
   const ref = useRef();
+
   useEffect(() => {
   	if(active && auth) {
       if(user.wallet !== account){
@@ -20,3 +21,5 @@ export default function CheckAuth(auth, user) {
 
   return ref.current;
 }
+
+export default CheckAuth;

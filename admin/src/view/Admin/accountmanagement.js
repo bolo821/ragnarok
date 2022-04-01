@@ -14,15 +14,15 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import {  AdminTextField } from '../../components/adminlayout/LayoutItem';
+import { AdminTextField } from '../../components/adminlayout/LayoutItem';
 import { openModal } from '../../actions/modal';
 import { styled } from '@mui/material/styles';
 import {useWeb3React} from '@web3-react/core';
-import { setAlert } from '../../actions/alert';
 import { registerSubaccount, getSubaccounts, changePassword, forgotpassword } from '../../actions/auth';
 import Sidebar from './adminSidebar';
 import { updateContractBalance } from '../../actions/ymirBalance';
 import { AdminLayout, AdminBody, AdminMainBody } from '../../components/adminlayout/LayoutItem';
+import { toast } from 'react-toastify';
 
 const AuthButton = styled(Button)(({ theme }) => ({
   marginRight: '20px',
@@ -72,11 +72,10 @@ function AccountManagement() {
   const auth = useSelector(state => state.auth);
   const balance = useSelector(state => state.balance);
   const ymir = useSelector(state => state.ymir);
-
   const dispatch = useDispatch();
-
   const { account } = useWeb3React();
   const { user, users } = auth;
+  const [ flag, setFlag ] = useState(true);
 
   const [formData, setFormData] = useState({
     userid: '',
@@ -85,17 +84,17 @@ function AccountManagement() {
     currentpassword: '',
   });
 
-  const [account_id, setAccountID] = useState('');
+  const [ account_id, setAccountID ] = useState('');
   const [ account_name, setAccountName ] = useState('');
 
   const { userid, password, password2, currentpassword } = formData;
-  const [withdraw, setWithdraw] = useState(0);
-  const [deposit, setDeposit] = useState(0);
+  const [ withdraw, setWithdraw ] = useState(0);
+  const [ deposit, setDeposit ] = useState(0);
   const { contractBalance } = ymir;
   const { sub } = balance;
-  const [addmodal, setAddModal] = React.useState(false);
-  const [managemodal, setManageModal] = React.useState(false);
-  const [passwordmodal, setPasswordModal] = React.useState(false);
+  const [ addmodal, setAddModal ] = React.useState(false);
+  const [ managemodal, setManageModal ] = React.useState(false);
+  const [ passwordmodal, setPasswordModal ] = React.useState(false);
 
   const handleAddOpen = () => setAddModal(true);
   const handleAddClose = () => setAddModal(false);
@@ -108,18 +107,15 @@ function AccountManagement() {
     if(window.confirm("You are trying to deposit "+ deposit+" Ymir Coin. Click confirm to proceed.")) {
       try {
         if(deposit <= 0) {
-          dispatch(setAlert('Please Input token Balance again.', 'warning'));
+          toast.warn('Please Input token Balance again.');
           return;
         }
         if(deposit > contractBalance) {
-          dispatch(setAlert('Please Input correct token Balance.', 'warning'));
+          toast.warn('Please Input correct token Balance.');
           return;
         }
-
-        //const purchase = await ymirContract.deposit(account, getDecimalAmount(deposit));
         handleManageClose()
 
-        
         let masterdata = {
           token: 'YMIR',
           newvalue: contractBalance - Number(deposit),
@@ -136,17 +132,13 @@ function AccountManagement() {
           message : `You attempted to deposit ${deposit} Ymir Coins`,
           account_id : account_id
         }
-
         dispatch(updateContractBalance(subdata, account_id));
-       
         setDeposit(0);
-        
         dispatch(openModal(true, `Deposit from Metamask. ${deposit} Ymir Coin was successfully deposited into your game account wallet.`));
-        // history.push('/success');
-      } catch(err) {
+      } catch (err) {
         handleManageClose()
         console.log(err)
-        dispatch(setAlert('Something went wrong.', 'error'));
+        toast.error('Something went wrong.');
       }
       localStorage.removeItem('YMIR_action');
     }
@@ -156,11 +148,9 @@ function AccountManagement() {
     if(window.confirm("You are trying to deposit "+ withdraw+" Ymir Coin. Click confirm to proceed.")) {
       try {
         if(withdraw <= 0 || sub < withdraw) {
-          dispatch(setAlert('Please Input token Balance again.', 'warning'));
+          toast.warn('Please Input token Balance again.');
           return;
         }
-       
-        //const purchase = await ymirContract.withdraw(account, getDecimalAmount(withdraw))
         handleManageClose();
         let masterdata = {
           token: 'YMIR',
@@ -183,18 +173,20 @@ function AccountManagement() {
         dispatch(openModal(true, `Withdraw to Metamask. ${withdraw} Ymir Coin was successfully withdrawn from your game account wallet.`));
       } catch(err) {
         handleManageClose();
-        console.log(err)
-        dispatch(setAlert('Something went wrong.', 'error'));
+        console.log(err);
+        toast.error('Something went wrong.');
       }
-      localStorage.removeItem('YMIR_action');
     }
   }
 
 
   const onChange = (e) => {
-    if (e.target.name === "userid") {
+    if (e.target.name === "userid" && e.target.value !== '') {
       if (e.target.value.match(/\W/)) {
-        dispatch(setAlert('Do not write the special character', 'warning'));
+        if (flag) {
+          toast.warn('Do not write the special character.');
+          setFlag(false);
+        }
         return;
       }
     }
@@ -205,10 +197,10 @@ function AccountManagement() {
   const onRegister = async (e) => {
     e.preventDefault();
     if (!account) {
-      dispatch(setAlert('Please connect to your wallet', 'warning'));
+      toast.warn('Please connect to your wallet');
     }
     if (password !== password2) {
-      dispatch(setAlert('Passwords do not match', 'warning'));
+      toast.warn('Passwords do not match');
     } else {
       dispatch(registerSubaccount({ userid, password, wallet: account }));
       handleAddClose();
@@ -223,7 +215,7 @@ function AccountManagement() {
   const onPassword = async (e) => {
     e.preventDefault();
     if (password !== password2) {
-      dispatch(setAlert('Passwords do not match', 'warning'));
+      toast.warn('Passwords do not match');
     } else {
       dispatch(changePassword({ password2, password, currentpassword, account_id, account_name, parent_user_id: user.account_id }));
       setFormData({
@@ -239,6 +231,7 @@ function AccountManagement() {
 
   useEffect(() => {
     dispatch(getSubaccounts());
+    setFlag(true);
   }, [ dispatch ])
 
   return (
@@ -292,7 +285,6 @@ function AccountManagement() {
                             Change
                           </TableButton>
                         </TableCell>
-                        
                       </TableRow>
                     ))}
                   </TableBody>
@@ -318,7 +310,7 @@ function AccountManagement() {
                   </Typography>
                 </Grid>
                 <Grid item xs={9} sx={{py: {lg: 2, sm: 1, xs: 0}}}>
-                  <TextField fullWidth label="Username" size='small' required name="userid" value={userid} onChange={onChange} disabled={!account} />
+                  <TextField fullWidth label="Username" size='small' required name="userid" value={userid} onChange={onChange} disabled={!account} autoComplete="off" />
                 </Grid>
               </Grid>
 
@@ -329,7 +321,7 @@ function AccountManagement() {
                   </Typography>
                 </Grid>
                 <Grid item xs={9} sx={{py: {lg: 2, sm: 1, xs: 0}}}>
-                  <TextField fullWidth label="Password" size='small' required type='password' name="password" value={password} onChange={onChange} disabled={!account} />
+                  <TextField fullWidth label="Password" size='small' required type='password' name="password" value={password} onChange={onChange} disabled={!account} autoComplete="off" />
                 </Grid>
               </Grid>
 
@@ -340,7 +332,7 @@ function AccountManagement() {
                   </Typography>
                 </Grid>
                 <Grid item xs={9} sx={{py: {lg: 2, sm: 1, xs: 0}}}>
-                  <TextField fullWidth label="Confirm Password" size='small' required type='password' disabled={!account} name="password2" value={password2} onChange={onChange} />
+                  <TextField fullWidth label="Confirm Password" size='small' required type='password' disabled={!account} name="password2" value={password2} onChange={onChange} autoComplete="off" />
                 </Grid>
                 <Stack alignItems={{xs: 'center', width: '100%'}} direction='row' justifyContent='space-around'>
                   <AuthButton type='submit' disabled={!account}>
@@ -370,6 +362,7 @@ function AccountManagement() {
                     name='currentpassword'
                     value={currentpassword}
                     onChange={onChange}
+                    autoComplete="off"
                   />
                 </Grid>
               </Grid>
@@ -398,6 +391,7 @@ function AccountManagement() {
                     name='password'
                     value={password}
                     onChange={onChange}
+                    autoComplete="off"
                   />
                 </Grid>
               </Grid>
@@ -413,6 +407,7 @@ function AccountManagement() {
                     name='password2'
                     value={password2}
                     onChange={onChange}
+                    autoComplete="off"
                   />
                 </Grid>
                 <Stack alignItems={{xs: 'center', width: '100%'}}>
@@ -442,7 +437,7 @@ function AccountManagement() {
                 </Typography>
               </Grid>
               <Grid item xs={12} sx={{py: {lg: 2, sm: 1, xs: 0}}}>
-                <AdminTextField fullWidth label='Balance' size='small' required type='number' value={withdraw} onChange={(e) => setWithdraw(e.target.value)} />
+                <AdminTextField fullWidth label='Balance' size='small' required type='number' value={withdraw} onChange={(e) => setWithdraw(e.target.value)} autoComplete="off" />
               </Grid>
               <Stack alignItems={{xs: 'center', width: '100%'}} direction='row' justifyContent='space-around'>
                 <AuthButton variant='outlined' fullWidth onClick={() => Withdraw()}>
@@ -451,14 +446,13 @@ function AccountManagement() {
               </Stack>
             </Grid>
             <Grid container>
+              <Grid item xs={12} sx={{py: {lg: 2, sm: 1, xs: 0}}}>
+                <Typography variant='p'>
+                  Master Account Balance : {contractBalance}
+                </Typography>
+              </Grid>
             <Grid item xs={12} sx={{py: {lg: 2, sm: 1, xs: 0}}}>
-             
-              <Typography variant='p'>
-                Master Account Balance : {contractBalance}
-              </Typography>
-            </Grid>
-            <Grid item xs={12} sx={{py: {lg: 2, sm: 1, xs: 0}}}>
-              <AdminTextField fullWidth label='Balance' size='small' required type='number' value={deposit} onChange={(e) => setDeposit(e.target.value)} />
+              <AdminTextField fullWidth label='Balance' size='small' required type='number' value={deposit} onChange={(e) => setDeposit(e.target.value)} autoComplete="off" />
             </Grid>
             <Stack alignItems={{xs: 'center', width: '100%'}} direction='row' justifyContent='space-around'>
               <AuthButton variant='outlined' fullWidth onClick={()=> Deposit()}>

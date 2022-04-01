@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from "react-router-dom";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -15,8 +15,6 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Modal from '@mui/material/Modal';
 import { styled } from '@mui/material/styles';
-import { setAlert } from '../../actions/alert';
-import { getLogs } from '../../actions/logs';
 import Sidebar from './adminSidebar';
 import { AdminLayout, AdminBody, AdminMainBody, AuthButton, AdminTextField } from '../../components/adminlayout/LayoutItem';
 import { getUsers, sendCoinByAdmin } from '../../actions/user';
@@ -60,7 +58,10 @@ const modalstyle = {
 
 
 
-function Tokens({ auth, logs, users, setAlert, getLogs, getUsers, sendCoinByAdmin }) {
+function Tokens() {
+    const dispatch = useDispatch();
+    const auth = useSelector(state => state.auth);
+    const users = useSelector(state => user);
     const { user, isAuthenticated } = auth;
     const { userlist } = users;
     const [mail, setMail] = useState(null);
@@ -74,8 +75,8 @@ function Tokens({ auth, logs, users, setAlert, getLogs, getUsers, sendCoinByAdmi
     };
 
     useEffect(() => {
-        getUsers()
-    }, [getUsers])
+        dispatch(getUsers());
+    }, [ dispatch ])
 
 
     if (isAuthenticated) {
@@ -94,7 +95,7 @@ function Tokens({ auth, logs, users, setAlert, getLogs, getUsers, sendCoinByAdmi
     }
     const handleMailClose = () => { setOpenCoin(false); setAmount(0) }
     const handleSend = () => {
-        sendCoinByAdmin(id, amount, type);
+        dispatch(sendCoinByAdmin(id, amount, type));
     }
 
     let displayusers = userlist.filter(m => m.group_id === 0).slice((page - 1) * 10, page * 10);
@@ -199,9 +200,4 @@ function Tokens({ auth, logs, users, setAlert, getLogs, getUsers, sendCoinByAdmi
     );
 }
 
-const mapStateToProps = (state) => ({
-    auth: state.auth,
-    users: state.user
-});
-
-export default connect(mapStateToProps, { setAlert, getLogs, getUsers, sendCoinByAdmin })(Tokens);
+export default Tokens;

@@ -1,12 +1,22 @@
+import { toast } from 'react-toastify';
 import api from '../utils/api';
-import { setAlert } from './alert';
 import {
   GET_USER
 } from './types';
 
-
-// Get Balances
 export const getUsers = () => async dispatch => {
+  try {
+    const res = await api.get('/users/master');
+    dispatch({
+      type: GET_USER,
+      payload: res.data
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getAllUsers = () => async dispatch => {
   try {
     const res = await api.get('/users/list');
     dispatch({
@@ -35,7 +45,7 @@ export const sendMailByAdmin  = (email, title, content) => async dispatch => {
   }catch(err){
     const errors = err.response.data.errors;
     if (errors) {
-      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+      errors.forEach(error => toast.error(error.msg));
     }
   }
 }
@@ -44,11 +54,11 @@ export const sendCoinByAdmin  = (account_id, amount, token) => async dispatch =>
   try{
     const body = {account_id, amount, token};
     await api.post('/users/coin', body);
-    dispatch(setAlert('Succss send Coin', 'success'));
+    toast.success('Succss send Coin');
   }catch(err){
     const errors = err.response.data.errors;
     if (errors) {
-      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+      errors.forEach(error => toast.error(error.msg));
     }
   }
 }

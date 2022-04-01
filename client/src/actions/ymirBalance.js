@@ -1,6 +1,6 @@
+import { toast } from 'react-toastify';
 import api from '../utils/api';
 import { getBalanceAmount } from '../utils/formatBalance';
-import { setAlert } from './alert';
 import { getLogs } from './logs';
 import {
   GET_YMIR_WALLET_BALANCE,
@@ -88,13 +88,12 @@ export const updateFunndBalance = (data) => async dispatch => {
   try {
     const res = await api.post('/fund/updatebalance', data);
     return res.data;
-    // dispatch(setAlert('Succefully withdrawed', 'success'));
   } catch (err) {
     console.log(err);
     const errors = err.response.data.errors;
 
     if (errors) {
-      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+      errors.forEach(error => toast.error(error.msg));
     }
   }
 }
@@ -103,12 +102,12 @@ export const updateFunndBalance = (data) => async dispatch => {
 export const updateTempBalance = (data, account_id) => async dispatch => {
   try {
     await api.post('/balance/updatetempbalance', data);
-    // dispatch(getContractBalance(account_id));
+    dispatch(getContractBalance(account_id));
     dispatch(getLogs(account_id));
   } catch (err) {
     const errors = err.response.data.errors;
     if (errors) {
-      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+      errors.forEach(error => toast.error(error.msg));
     }
   }
 };
@@ -146,17 +145,13 @@ export const getFundBalance = (account_id) => async dispatch => {
 export const updateFundTempBalance = (data, account_id) => async dispatch => {
   try {
     await api.post('/fund/updatetempbalance', data);
-
     dispatch(getContractBalance(account_id));
-
     dispatch(getLogs(account_id));
-
-    // dispatch(setAlert('Succefully withdrawed', 'success'));
   } catch (err) {
     const errors = err.response.data.errors;
 
     if (errors) {
-      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+      errors.forEach(error => toast.error(error.msg));
     }
   }
 };

@@ -9,7 +9,6 @@ export default function CountDown({flag, setFlag, color}) {
   React.useEffect(() => {
     if(flag === true){
       let time = Math.ceil((current - start)/1000);
-
       time < 60 && setTimer(setTimeout(() => {
         setCurrent(Number(new Date()));
       }, 1000));

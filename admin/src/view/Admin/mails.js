@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from "react-router-dom";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -15,8 +15,6 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Modal from '@mui/material/Modal';
 import { styled } from '@mui/material/styles';
-import { setAlert } from '../../actions/alert';
-import { getLogs } from '../../actions/logs';
 import Sidebar from './adminSidebar';
 import { AdminLayout, AdminBody, AdminMainBody, AuthButton, AdminTextField } from '../../components/adminlayout/LayoutItem';
 import { getUsers, sendMailByAdmin } from '../../actions/user';
@@ -57,7 +55,10 @@ const modalstyle = {
     p: 4,
 };
 
-function Mails({ auth, logs, users, setAlert, getLogs, getUsers, sendMailByAdmin }) {
+function Mails() {
+    const dispatch = useDispatch();
+    const auth = useSelector(state => state.auth);
+    const users = useSelector(state => state.user);
     const { user, isAuthenticated } = auth;
     const { userlist } = users;
     const [usermail, setUserMail] = useState(null);
@@ -71,8 +72,8 @@ function Mails({ auth, logs, users, setAlert, getLogs, getUsers, sendMailByAdmin
     };
 
     useEffect(() => {
-        getUsers()
-    }, [getUsers])
+        dispatch(getUsers());
+    }, [ dispatch ])
 
     if (isAuthenticated) {
         if (user) {
@@ -88,7 +89,7 @@ function Mails({ auth, logs, users, setAlert, getLogs, getUsers, sendMailByAdmin
     }
     const handleMailClose = () => { setSendMail(false); setContent(''); setTitle('') }
     const handleSend = () => {
-        sendMailByAdmin(usermail, title, content);
+        dispatch(sendMailByAdmin(usermail, title, content));
     }
 
     let displayusers = userlist.slice((page - 1) * 10, page * 10);
@@ -189,9 +190,4 @@ function Mails({ auth, logs, users, setAlert, getLogs, getUsers, sendMailByAdmin
     );
 }
 
-const mapStateToProps = (state) => ({
-    auth: state.auth,
-    users: state.user
-});
-
-export default connect(mapStateToProps, { setAlert, getLogs, getUsers, sendMailByAdmin })(Mails);
+export default Mails;

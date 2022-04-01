@@ -1,6 +1,6 @@
+import { toast } from 'react-toastify';
 import api from '../utils/api';
 import { getBalanceAmount } from '../utils/formatBalance';
-import { setAlert } from './alert';
 import { getLogs } from './logs';
 import {
   GET_BALANCE,
@@ -87,13 +87,11 @@ export const updateTempBalance = (data, account_id) => async dispatch => {
 
     dispatch(getBalance(account_id));
     dispatch(getLogs(account_id));
-
-    // dispatch(setAlert('Succefully withdrawed', 'success'));
   } catch (err) {
     const errors = err.response.data.errors;
 
     if (errors) {
-      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+      errors.forEach(error => toast.error(error.msg));
     }
   }
 };
@@ -105,13 +103,11 @@ export const updateBalance = (data, account_id) => async dispatch => {
 
     dispatch(getBalance(account_id));
     dispatch(getLogs(account_id));
-
-    // dispatch(setAlert('Succefully withdrawed', 'success'));
   } catch (err) {
     const errors = err.response.data.errors;
 
     if (errors) {
-      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+      errors.forEach(error => toast.error(error.msg));
     }
   }
 };

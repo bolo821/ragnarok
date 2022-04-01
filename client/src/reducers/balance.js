@@ -3,6 +3,8 @@ import {
   GET_ROK_BALANCE,
   GET_YMIR_FUND_BALANCES,
   GET_ROK_FUND_BALANCES,
+  GET_YMIR_WALLET_BALENCES,
+  GET_ROK_WALLET_BALANCES,
 } from '../actions/types';
 
 const initialState = {
@@ -10,6 +12,8 @@ const initialState = {
   roklist : [],
   ymirfundlist: [],
   rokfundlist: [],
+  ymirwalletlist: [],
+  rokwalletlist: [],
 };
 
 function balanceReducer(state = initialState, action) {
@@ -36,6 +40,18 @@ function balanceReducer(state = initialState, action) {
       return {
         ...state,
         rokfundlist: payload ? payload : [],
+      }
+    }
+    case GET_YMIR_WALLET_BALENCES: {
+      return {
+        ...state,
+        ymirwalletlist: payload ? payload : [],
+      }
+    }
+    case GET_ROK_WALLET_BALANCES: {
+      return {
+        ...state,
+        rokwalletlist: payload ? payload : [],
       }
     }
     default:

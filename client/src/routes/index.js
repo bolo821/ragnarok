@@ -4,6 +4,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import Dashboard from '../view/Dashboard';
 import Login from '../view/Auth/login';
 import ForgotPassword from '../view/Auth/forgotpassword';
+
 import Emailverification from '../view/Admin/emailverification';
 import Register from '../view/Auth/register';
 import AccountManagement from '../view/Admin/accountmanagement';
@@ -24,7 +25,7 @@ const Routes = () => {
         <PrivateRoute path="/manageaccount" component={ AccountManagement } />
         <PrivateRoute path="/dashboard" component={ UserDashboard } />
         <PrivateRoute path="/activities" component={ UserActivities } />
-        <Route path="/404" component={NotFound} />
+        <Route path="/404" component={ NotFound } />
 	      <Redirect to="/404" />
     	</Switch>
     </>

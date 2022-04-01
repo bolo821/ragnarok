@@ -14,7 +14,6 @@ const Banner = ({logout}) => {
         component='img'
         src="/banner.png"
       >
-        
       </BannerWrap>
     </Box>
   );

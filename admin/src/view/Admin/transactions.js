@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from "react-router-dom";
 
 import Box from '@mui/material/Box';
@@ -15,11 +15,9 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
-import { setAlert } from '../../actions/alert';
 import { getLogs } from '../../actions/logs';
 import Sidebar from './adminSidebar';
 import { AdminLayout, AdminBody, AdminMainBody } from '../../components/adminlayout/LayoutItem';
-import { getTokenBalances } from '../../actions/balance';
 
 const DashboardBody = styled(Box)(({ theme }) => ({
     padding: '26px',
@@ -48,9 +46,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 
-
-
-function Transactions({ auth, logs, balances, setAlert, getLogs, getTokenBalances }) {
+function Transactions() {
+    const dispatch = useDispatch();
+    const auth = useSelector(state => state.auth);
+    const logs = useSelector(state => state.logs);
     const { user, isAuthenticated } = auth;
     const { loglist } = logs;
     const ymirlogs = loglist.filter(m => m.type === 'YMIR');
@@ -62,8 +61,8 @@ function Transactions({ auth, logs, balances, setAlert, getLogs, getTokenBalance
     };
 
     useEffect(() => {
-        getLogs();
-    }, [getLogs])
+        dispatch(getLogs())
+    }, [ dispatch ])
 
 
     if (isAuthenticated) {
@@ -78,7 +77,6 @@ function Transactions({ auth, logs, balances, setAlert, getLogs, getTokenBalance
     let displayroks = roklogs?.slice((page - 1) * 10, page * 10);
     return (
         <>
-            {/*<AdminHeader />*/}
             <AdminLayout>
                 <AdminBody direction='row'>
                     <Sidebar />
@@ -188,10 +186,4 @@ function Transactions({ auth, logs, balances, setAlert, getLogs, getTokenBalance
     );
 }
 
-const mapStateToProps = (state) => ({
-    auth: state.auth,
-    logs: state.logs,
-    balances: state.balance
-});
-
-export default connect(mapStateToProps, { setAlert, getLogs, getTokenBalances })(Transactions);
+export default Transactions;

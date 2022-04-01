@@ -1,6 +1,6 @@
+import { toast } from 'react-toastify';
 import api from '../utils/api';
 import { getBalanceAmount } from '../utils/formatBalance';
-import { setAlert } from './alert';
 import { getLogs } from './logs';
 import {
   GET_ROK_WALLET_BALANCE,
@@ -8,7 +8,6 @@ import {
   GET_ROK_FUND_BALANCE
 } from './types';
 
-// Get Balances
 export const get_balances = () => async dispatch => {
   // try {
   //   const res = await api.get('/balance/list');
@@ -109,13 +108,12 @@ export const updateFunndBalance = (data, account_id) => async dispatch => {
   try {
     const res = await api.post('/fund/updatebalance', data);
     return res.data;
-    // dispatch(setAlert('Succefully withdrawed', 'success'));
   } catch (err) {
     console.log(err);
     const errors = err.response.data.errors;
 
     if (errors) {
-      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+      errors.forEach(error => toast.error(error.msg));
     }
   }
 }
@@ -129,12 +127,11 @@ export const updateFundTempBalance = (data, account_id) => async dispatch => {
 
     dispatch(getLogs(account_id));
 
-    // dispatch(setAlert('Succefully withdrawed', 'success'));
   } catch (err) {
     const errors = err.response.data.errors;
 
     if (errors) {
-      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+      errors.forEach(error => toast.error(error.msg));
     }
   }
 };
@@ -143,17 +140,14 @@ export const updateFundTempBalance = (data, account_id) => async dispatch => {
 export const updateTempBalance = (data, account_id) => async dispatch => {
   try {
     await api.post('/balance/updatetempbalance', data);
-
     dispatch(getContractBalance(account_id));
-
     dispatch(getLogs(account_id));
 
-    // dispatch(setAlert('Succefully withdrawed', 'success'));
   } catch (err) {
     const errors = err.response.data.errors;
 
     if (errors) {
-      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+      errors.forEach(error => toast.error(error.msg));
     }
   }
 };
@@ -162,11 +156,8 @@ export const updateTempBalance = (data, account_id) => async dispatch => {
 export const updateContractBalance = (data, account_id) => async dispatch => {
   try {
     const res = await api.post('/balance/updatebalance', data);
-
-    //dispatch(getContractBalance(account_id));
     dispatch(getLogs(account_id));
     return res.data;
-    // dispatch(setAlert('Succefully withdrawed', 'success'));
   } catch (err) {
     return false
   }

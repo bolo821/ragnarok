@@ -1,6 +1,6 @@
 import { SET_NEWS_RT } from "./types";
 import api from '../utils/api';
-import { setAlert } from "./alert";
+import { toast } from "react-toastify";
 
 export const addNews = formData => dispatch => {
     api.post('/news/add', formData, { headers: {'Content-type': 'multipart/form-data'} }).then(res => {
@@ -34,7 +34,7 @@ export const deleteNews = id => dispatch => {
         console.log('error: ', err);
         const errors = err.response.data.errors;
         if (errors) {
-            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+            errors.forEach(error => toast.error(error.msg));
         }
     });
 }

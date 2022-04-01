@@ -4,7 +4,6 @@ import {AddressZero} from '@ethersproject/constants';
 import api from './api';
 import jwt_decode from 'jwt-decode';
 import { RPC_url } from '../config';
-
 const Provide = require('@truffle/hdwallet-provider');
 const Web3 = require('web3');
 
@@ -15,7 +14,7 @@ export function isAddress(value) {
     return false;
   }
 }
-// account is not optional
+
 export function getSigner(
   library,
   account,
@@ -23,7 +22,6 @@ export function getSigner(
   return library.getSigner(account).connectUnchecked();
 }
 
-// account is optional
 export function getProviderOrSigner(
   library,
   account,
@@ -31,7 +29,6 @@ export function getProviderOrSigner(
   return account ? getSigner(library, account) : library;
 }
 
-// account is optional
 export function getContract(
   address,
   ABI,

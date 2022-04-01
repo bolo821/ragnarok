@@ -35,8 +35,6 @@ const ArrowStyle = styled(IconButton)(({ theme }) => ({
   fontSize: '100px'
 }));
 
-// ----------------------------------------------------------------------
-
 export default function CarouselControl({ arrowLine, onNext, onPrevious, ...other }) {
   return (
     <RootStyle {...other}>

@@ -8,7 +8,6 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import { styled } from '@mui/material/styles';
-import { setAlert } from '../../../actions/alert';
 import { updateTempBalance, updateContractBalance, getWalletBalance, getContractBalance, updateFunndBalance, getAccountBalance } from '../../../actions/ymirBalance';
 import { setTverify, transactionverify, resend } from '../../../actions/auth';
 import { openModal } from '../../../actions/modal';
@@ -21,6 +20,7 @@ import { AuthButton, AdminTextField, VerifyTextfieldWrap, VerifyTextfield, Verif
 import CountDown from '../../../components/CountDown';
 import { getDecimalAmount } from '../../../utils/formatBalance';
 import { verifyNumberByDecimal } from '../../../utils/helper';
+import { toast } from 'react-toastify';
 
 const DepositButton = styled(Button)(({ theme }) => ({
   height: '30px',
@@ -65,6 +65,9 @@ function YMIRTransaction() {
   const [verifymodal, setVerifymodal] = useState(false);
 
   useEffect(() => {
+      dispatch(getWalletBalance(ymirContract, account));
+      dispatch(getContractBalance(ymirContract, account));
+      dispatch(getAccountBalance(user.account_id));
     const timer = setInterval(() => {
       dispatch(getWalletBalance(ymirContract, account));
       dispatch(getContractBalance(ymirContract, account));
@@ -113,19 +116,19 @@ function YMIRTransaction() {
     if (window.confirm("You are trying to deposit " + deposit + " Ymir Coin. Click confirm to proceed.")) {
       try {
         if (deposit <= 0) {
-          dispatch(setAlert('Please Input token Balance again.', 'warning'));
+          toast.warn('Please Input token Balance again.');
           return;
         }
         if (parseFloat(deposit) > parseFloat(walletBalance)) {
-          dispatch(setAlert('The current token amount is exceeding your balance.', 'warning'));
+          toast.warn('The current token amount is exceeding your balance.');
           return;
         }
         if (!verifyNumberByDecimal(deposit, 18)) {
-          dispatch(setAlert('The number is exceeding the decimal.', 'warning'));
+          toast.warn('The number is exceeding the decimal.');
           return;
         }
-        
-        dispatch(setAlert('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.', 'warning', 10000));
+
+        toast.warn('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.');
         handleDepositClose();
 
         dispatch({ type: 'SET_LOADER', payload: true });
@@ -157,14 +160,13 @@ function YMIRTransaction() {
 
         //     SOCKET.emit('END_TRANSACTION', user.account_id);
         //   } else {
-        //     dispatch(setAlert('Please finish the current transaction and try again.', 'danger'));
         //     dispatch({ type: 'SET_LOADER', payload: false })
         //   }
         // });
       } catch (err) {
         handleDepositClose()
-        dispatch({ type: 'SET_LOADER', payload: false })
-        dispatch(setAlert('Something went wrong.', 'error'));
+        dispatch({ type: 'SET_LOADER', payload: false });
+        toast.error('Something went wrong.');
       }
     }
   }
@@ -174,16 +176,16 @@ function YMIRTransaction() {
     if (window.confirm("You are trying to deposit " + widthraw + " Ymir Coin. Click confirm to proceed.")) {
       try {
         if (widthraw <= 0 || parseFloat(contractBalance) < parseFloat(widthraw)) {
-          dispatch(setAlert('Please Input token Balance again.', 'warning'));
+          toast.warn('Please Input token Balance again.');
           return;
         }
 
         if (!verifyNumberByDecimal(widthraw, 18)) {
-          dispatch(setAlert('The number is exceeding the decimal.', 'warning'));
+          toast.warn('The number is exceeding the decimal.');
           return;
         }
 
-        dispatch(setAlert('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.', 'warning', 10000));
+        toast.warn('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.');
         handleWithdrawClose();
         dispatch({ type: 'SET_LOADER', payload: true });
 
@@ -212,9 +214,10 @@ function YMIRTransaction() {
       } catch (err) {
         dispatch({ type: 'SET_LOADER', payload: false })
         handleWithdrawClose();
-        console.log(err)
-        dispatch(setAlert('Something went wrong.', 'error'));
+        console.log(err);
+        toast.error('Something went wrong.');
       }
+      // localStorage.removeItem('YMIR_action');
     }
   }
 
@@ -223,17 +226,17 @@ function YMIRTransaction() {
     if (window.confirm("You are trying to claim " + fundBalance + " Ymir Coin. Click confirm to proceed.")) {
       try {
         let fundDepositBalance = await dispatch(getAccountBalance(user.account_id));
-        if (fundDepositBalance <= 0 ) { 
-          dispatch(setAlert('Please Token Balance again.', 'warning'));
+        if (fundDepositBalance <= 0 ) {
+          toast.warn('Please Token Balance again.');
           return;
         }
 
         if (!verifyNumberByDecimal(fundDepositBalance, 18)) {
-          dispatch(setAlert('The number is exceeding the decimal.', 'warning'));
+          toast.warn('The number is exceeding the decimal.');
           return;
         }
 
-        dispatch(setAlert('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.', 'warning', 10000));
+        toast.warn('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.');
         handleDepositFundClose()
         dispatch({ type: 'SET_LOADER', payload: true })
         
@@ -254,14 +257,14 @@ function YMIRTransaction() {
           dispatch({ type: 'SET_LOADER', payload: false });
           dispatch(openModal(true, `Claim Ymir Coins. ${fundDepositBalance} Ymir Coin was successfully claimed from your game account wallet.`));
         } else {
-          dispatch({ type: 'SET_LOADER', payload: false })
-          dispatch(setAlert('Something went wrong.', 'error'));
+          dispatch({ type: 'SET_LOADER', payload: false });
+          toast.error('Something went wrong.');
         }
       } catch (err) {
         handleDepositFundClose()
         console.log(err)
         dispatch({ type: 'SET_LOADER', payload: false })
-        dispatch(setAlert('Something went wrong.', 'error'));
+        toast.error('Something went wrong.');
       }
     }
   }
@@ -270,15 +273,16 @@ function YMIRTransaction() {
     if (window.confirm("You are trying to transfer " + withdrawFund + " Ymir Coin into your Game Account Wallet. Click confirm to proceed.")) {
       try {
         if (withdrawFund <= 0 || parseFloat(contractBalance) < parseFloat(withdrawFund)) {
-          dispatch(setAlert('Please Input token Balance again.', 'warning'));
-          return;
-        }
-        if (!verifyNumberByDecimal(withdrawFund, 18)) {
-          dispatch(setAlert('The number is exceeding the decimal.', 'warning'));
+          toast.warn('Please Input token Balance again.');
           return;
         }
 
-        dispatch(setAlert('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.', 'warning', 10000));
+        if (!verifyNumberByDecimal(withdrawFund, 18)) {
+          toast.warn('The number is exceeding the decimal.');
+          return;
+        }
+
+        toast.warn('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.');
         dispatch({ type: 'SET_LOADER', payload: true });
         handleWithdrawFundClose();
         let txHash = await ymirContract.DepositToGame(account, getDecimalAmount(withdrawFund));
@@ -300,18 +304,18 @@ function YMIRTransaction() {
             dispatch({ type: 'SET_LOADER', payload: false })
             dispatch(openModal(true, `Transfer to Game. ${withdrawFund} Ymir Coin was successfully transfered into your game account wallet.`));
           } else {
-            dispatch({ type: 'SET_LOADER', payload: false })
-            dispatch(setAlert('Something went wrong.', 'error'));
+            dispatch({ type: 'SET_LOADER', payload: false });
+            toast.error('Something went wrong.');
           }
         } else {
           dispatch({ type: 'SET_LOADER', payload: false })
-          dispatch(setAlert('Something went wrong.', 'error'));
+          toast.error('Something went wrong.');
         }
       } catch (err) {
         dispatch({ type: 'SET_LOADER', payload: false })
         handleWithdrawFundClose();
-        console.log(err)
-        dispatch(setAlert('Something went wrong.', 'error'));
+        console.log(err);
+        toast.error('Something went wrong.');
       }
     }
   }

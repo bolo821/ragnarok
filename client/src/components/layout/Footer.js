@@ -65,12 +65,12 @@ export default function Footer() {
 	    				<Typography variant="p" component="p" fontWeight={800} color='white' sx={{mb: 2}}>
 	              About
 	            </Typography>
-    					<a href="https://docs.ymircoin.com" target='_blank' rel='noreferrer'>
+    					<a href="https://docs.ymircoin.com" target='_blank' rel="noreferrer">
 		            <Typography variant="p" component="p" sx={{mb: 1}}>
 		              Whitepaper
 		            </Typography>
 		          </a>
-    					<a href="https://ymir.exchange" target='_blank'  rel='noreferrer'>
+    					<a href="https://ymir.exchange" target='_blank' rel="noreferrer">
 		            <Typography variant="p" component="p" sx={{mb: 1}}>
 		              Ymir Exchange
 		            </Typography>
