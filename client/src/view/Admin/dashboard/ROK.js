@@ -1,26 +1,30 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
+
 import { styled } from '@mui/material/styles';
-import { updateTempBalance, updateContractBalance, getWalletBalance, getContractBalance, updateFunndBalance, getAccountBalance } from '../../../actions/ymirBalance';
-import { setTverify, transactionverify, resend } from '../../../actions/auth';
+import { updateTempBalance, updateContractBalance, getWalletBalance, getContractBalance, updateFunndBalance, getAccountBalance } from '../../../actions/rokBalance';
+import { setTverify, transactionverifyROK, resend } from '../../../actions/auth';
 import { openModal } from '../../../actions/modal';
-import { ymiraddress, minterAddress } from '../../../config';
+
+import { rokaddress, minterAddress } from '../../../config';
 import { useContract } from '../../../hooks/useContract';
 import { getMinterContract } from '../../../utils/contracts';
-import YMIRABI from '../../../services/abis/YMIR.json';
+import ROKABI from '../../../services/abis/ROK.json';
+
 import { useWeb3React } from '@web3-react/core';
 import { AuthButton, AdminTextField, VerifyTextfieldWrap, VerifyTextfield, VerifyButton, formstyle } from '../../../components/adminlayout/LayoutItem';
 import CountDown from '../../../components/CountDown';
 import { getDecimalAmount } from '../../../utils/formatBalance';
-import { verifyNumberByDecimal } from '../../../utils/helper';
 import { toast } from 'react-toastify';
+import { verifyNumberByDecimal } from '../../../utils/helper';
 
 const DepositButton = styled(Button)(({ theme }) => ({
   height: '30px',
@@ -43,60 +47,57 @@ const modalstyle = {
   p: 4,
 };
 
-function YMIRTransaction() {
+function ROKTransaction() {
   const dispatch = useDispatch();
   const auth = useSelector(state => state.auth);
-  const { user, transaction_verify } = auth;
-  const balance = useSelector(state => state.ymir);
-
-  const { account } = useWeb3React();
+  const { user, transaction_verify_rok } = auth;
+  const balance = useSelector(state => state.rok);
   const { contractBalance, walletBalance, fundBalance } = balance;
-  const ymirContract = useContract(ymiraddress, YMIRABI);
-  
+  const rokContract = useContract(rokaddress, ROKABI);
+  const history = useHistory();
+  const { account } = useWeb3React();
+
   const [deposit, setDeposit] = useState(0);
   const [widthraw, setWidthraw] = useState(0);
   const [withdrawFund, setWithdrawFund] = useState(0);
+
   const [code, setCode] = useState('');
   const [flag, setFlag] = useState(false);
+
   const [depositmodal, setDepositmodal] = useState(false);
   const [withdrawmodal, setWithdrawmodal] = useState(false);
   const [depositFundmodal, setDepositFundmodal] = useState(false);
   const [withdrawFundmodal, setWithdrawFundmodal] = useState(false);
   const [verifymodal, setVerifymodal] = useState(false);
 
+
   useEffect(() => {
-      dispatch(getWalletBalance(ymirContract, account));
-      dispatch(getContractBalance(ymirContract, account));
-      dispatch(getAccountBalance(user.account_id));
     const timer = setInterval(() => {
-      dispatch(getWalletBalance(ymirContract, account));
-      dispatch(getContractBalance(ymirContract, account));
+      dispatch(getWalletBalance(rokContract, account));
+      dispatch(getContractBalance(rokContract, account));
       dispatch(getAccountBalance(user.account_id));
     }, 2000);
     return () => clearInterval(timer);
-  }, []);
+  }, [])
 
   const onVerify = async (e) => {
     e.preventDefault();
-    dispatch(transactionverify(code, handleVerifyClose));
+    dispatch(transactionverifyROK(code, handleVerifyClose));
   };
 
   const handleDepositOpen = () => {
     setDepositmodal(true);
   }
 
-  const handleDepositClose = () => {
-    setDepositmodal(false)
-  };
+  const handleDepositClose = () => setDepositmodal(false);
 
   const handleWithdrawOpen = () => {
-    if (!transaction_verify) {
+    if (!transaction_verify_rok) {
       handleVerifyOpen();
       return;
     }
     setWithdrawmodal(true);
   }
-
   const handleWithdrawClose = () => setWithdrawmodal(false);
   const handleDepositFundOpen = () => setDepositFundmodal(true);
   const handleDepositFundClose = () => setDepositFundmodal(false);
@@ -106,22 +107,21 @@ function YMIRTransaction() {
   const handleVerifyClose = () => setVerifymodal(false);
 
   useEffect(() => {
-    if (transaction_verify) {
+    if (transaction_verify_rok) {
       handleWithdrawOpen();
     }
-  }, [ transaction_verify ]);
+  }, [ transaction_verify_rok ]);
 
-  // Function for deposit Ymir token (Bolo)
-  const DepositYMIR = async () => {
-    if (window.confirm("You are trying to deposit " + deposit + " Ymir Coin. Click confirm to proceed.")) {
+  const DepositROK = async () => {
+    if (window.confirm("You are trying to deposit " + deposit + " RoK Points. Click confirm to proceed.")) {
       try {
-        if (deposit <= 0) {
+        if (parseFloat(deposit) <= 0) {
           toast.warn('Please Input token Balance again.');
           setDeposit(0);
           return;
         }
         if (parseFloat(deposit) > parseFloat(walletBalance)) {
-          toast.warn('The current token amount is exceeding your balance.');
+          toast.warn('Please Input correct token Balance.');
           setDeposit(0);
           return;
         }
@@ -132,59 +132,48 @@ function YMIRTransaction() {
         }
 
         toast.warn('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.');
-        handleDepositClose();
+        handleDepositClose()
+        dispatch({ type: 'SET_LOADER', payload: true })
+        let txHash = await rokContract.deposit(getDecimalAmount(deposit));
+        let confirmation = await txHash.wait();
+        let data = {
+          token: 'ROK',
+          hash: txHash.hash,
+          account_id: user.account_id
+        }
 
-        dispatch({ type: 'SET_LOADER', payload: true });
+        if (confirmation.status === 1) {
+          data.amount = Number(deposit);
+          data.message = `You attempted to deposit ${deposit} RoK Points from your Metamask Wallet.`;
+        } else {
 
-        // SOCKET.emit('START_TRANSACTION', user.account_id, async (can_start) => {
-        //   if (can_start) {
-            let txHash = await ymirContract.deposit(getDecimalAmount(deposit));
-            let confirmation = await txHash.wait();
-    
-            let data = {
-              token: 'YMIR',
-              hash: txHash.hash,
-              account_id: user.account_id
-            }
-    
-            if (confirmation.status === 1) {
-              data.amount = parseFloat(deposit);
-              data.message = `You attempted to deposit ${deposit} Ymir Coins from your Metamask Wallet.`;
-            } else {
-              data.amount = deposit;
-              data.message = `Your deposit attempt from Metamask Wallet has failed.`;
-            }
-    
-            dispatch(updateTempBalance(data, user.account_id));
-            dispatch(setTverify(false));
-            setDeposit(0);
-            dispatch({ type: 'SET_LOADER', payload: false })
-            dispatch(openModal(true, `Deposit from Metamask. ${deposit} Ymir Coin was successfully deposited into your game account wallet.`));
+          data.amount = deposit;
+          data.message = `Your deposit attempt from Metamask wallet has failed.`;
+        }
 
-        //     SOCKET.emit('END_TRANSACTION', user.account_id);
-        //   } else {
-        //     dispatch({ type: 'SET_LOADER', payload: false })
-        //   }
-        // });
+        dispatch(updateTempBalance(data, user.account_id));
+        dispatch(setTverify(false));
+        setDeposit(0);
+        dispatch({ type: 'SET_LOADER', payload: false })
+        dispatch(openModal(true, `Deposit from Metamask. ${deposit} RoK Points was successfully deposited into your game account wallet.`));
+
       } catch (err) {
         handleDepositClose()
         dispatch({ type: 'SET_LOADER', payload: false });
-        toast.error('Something went wrong.');
         setDeposit(0);
+        toast.error('Something went wrong.');
       }
     }
   }
 
-  // Withdraw ymir token (Bolo)
-  const withdrawYMIR = async () => {
-    if (window.confirm("You are trying to deposit " + widthraw + " Ymir Coin. Click confirm to proceed.")) {
+  const withdrawROK = async () => {
+    if (window.confirm("You are trying to deposit " + widthraw + " RoK Points. Click confirm to proceed.")) {
       try {
-        if (widthraw <= 0 || parseFloat(contractBalance) < parseFloat(widthraw)) {
+        if (parseFloat(widthraw) <= 0 || parseFloat(contractBalance) < parseFloat(widthraw)) {
           toast.warn('Please Input token Balance again.');
           setWidthraw(0);
           return;
         }
-
         if (!verifyNumberByDecimal(widthraw, 18)) {
           toast.warn('The number is exceeding the decimal.');
           setWidthraw(0);
@@ -193,50 +182,44 @@ function YMIRTransaction() {
 
         toast.warn('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.');
         handleWithdrawClose();
-        dispatch({ type: 'SET_LOADER', payload: true });
-
-        let txHash = await ymirContract.withdraw(getDecimalAmount(widthraw));
+        dispatch({ type: 'SET_LOADER', payload: true })
+        let txHash = await rokContract.withdraw(getDecimalAmount(widthraw));
         let confirmation = await txHash.wait();
-
         let data = {
-          token: 'YMIR',
+          token: 'ROK',
           account_id: user.account_id,
           hash: txHash.hash
         }
 
         if (confirmation.status === 1) {
           data.amount = Number(widthraw);
-          data.message = `You attempted to withdraw ${widthraw} Ymir Coins into your Metamask Wallet.`;
+          data.message = `You attempted to withdraw ${widthraw} Rok Points into your Metamask Wallet.`;
         } else {
           data.amount = widthraw;
-          data.message = `Your withdraw attempt into your Metamask Wallet has failed.`;
+          data.message = `Your withdraw attempt to Metamask Wallet has failed.`;
         }
-
         dispatch(updateTempBalance(data, user.account_id));
         dispatch(setTverify(false));
         setWidthraw(0);
         dispatch({ type: 'SET_LOADER', payload: false })
-        dispatch(openModal(true, `Withdraw to Metamask. ${widthraw} Ymir Coin was successfully withdrawn from your game account wallet.`));
+        dispatch(openModal(true, `Withdraw to Metamask. ${widthraw} RoK Points was successfully withdrawn from your game account wallet.`));
       } catch (err) {
+        setWidthraw(0);
         dispatch({ type: 'SET_LOADER', payload: false })
         handleWithdrawClose();
-        toast.error('Something went wrong.');
-        setWidthraw(0);
+        toast.warn('Something went wrong.');
       }
-      // localStorage.removeItem('YMIR_action');
     }
   }
 
-  // deposit fund function (Bolo)
-  const DepositFund = async () => {
-    if (window.confirm("You are trying to claim " + fundBalance + " Ymir Coin. Click confirm to proceed.")) {
+	const DepositFund = async () => {
+    if (window.confirm("You are trying to Claim " + fundBalance + " Rok Points. Click confirm to proceed.")) {
       try {
         let fundDepositBalance = await dispatch(getAccountBalance(user.account_id));
-        if (fundDepositBalance <= 0 ) {
+        if (parseFloat(fundDepositBalance) <= 0) {
           toast.warn('Please Token Balance again.');
           return;
         }
-
         if (!verifyNumberByDecimal(fundDepositBalance, 18)) {
           toast.warn('The number is exceeding the decimal.');
           return;
@@ -245,30 +228,28 @@ function YMIRTransaction() {
         toast.warn('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.');
         handleDepositFundClose()
         dispatch({ type: 'SET_LOADER', payload: true })
-        
         let data = {
-          token: 'YMIR',
+          token: 'ROK',
           type: 'deposit',
           amount: fundDepositBalance,
           account_id: user.account_id
         }
-        let flag = await dispatch(updateContractBalance(data));
+        let flag = await dispatch(updateContractBalance(data, user.account_id));
         if (flag === true) {
-          const ymirMinterContract = await getMinterContract(ymiraddress, YMIRABI);
-          let txHash = await ymirMinterContract.methods.WithdrawFromGame(account, getDecimalAmount(fundDepositBalance)).send({ from: minterAddress });
-		      data.hash = txHash.transactionHash;
-          data.message = `You attempted to claim ${fundDepositBalance} Ymir Coins`;
+          const rokMinterContract = await getMinterContract(rokaddress, ROKABI);
+          let txHash = await rokMinterContract.methods.WithdrawFromGame(account, getDecimalAmount(fundDepositBalance)).send({ from: minterAddress });
+    		  data.hash = txHash.transactionHash;
+          data.message = `You attempted to claim ${fundDepositBalance} RoK Points.`;
           dispatch(updateTempBalance(data, user.account_id));
           dispatch(getAccountBalance(user.account_id));
           dispatch({ type: 'SET_LOADER', payload: false });
-          dispatch(openModal(true, `Claim Ymir Coins. ${fundDepositBalance} Ymir Coin was successfully claimed from your game account wallet.`));
+          dispatch(openModal(true, `Claim Rok Points. ${fundDepositBalance} RoK Points was successfully claimed from your Game Account wallet.`));
         } else {
-          dispatch({ type: 'SET_LOADER', payload: false });
+          dispatch({ type: 'SET_LOADER', payload: false })
           toast.error('Something went wrong.');
         }
       } catch (err) {
         handleDepositFundClose()
-        console.log(err)
         dispatch({ type: 'SET_LOADER', payload: false })
         toast.error('Something went wrong.');
       }
@@ -276,14 +257,13 @@ function YMIRTransaction() {
   }
 
   const WithdrawFund = async () => {
-    if (window.confirm("You are trying to transfer " + withdrawFund + " Ymir Coin into your Game Account Wallet. Click confirm to proceed.")) {
+    if (window.confirm("You are trying to Transfer " + withdrawFund + " Rok Points into your Game Account Wallet. Click confirm to proceed.")) {
       try {
-        if (withdrawFund <= 0 || parseFloat(contractBalance) < parseFloat(withdrawFund)) {
+        if (parseFloat(withdrawFund) <= 0 || parseFloat(contractBalance) < parseFloat(withdrawFund)) {
           toast.warn('Please Input token Balance again.');
           setWithdrawFund(0);
           return;
         }
-
         if (!verifyNumberByDecimal(withdrawFund, 18)) {
           toast.warn('The number is exceeding the decimal.');
           setWithdrawFund(0);
@@ -291,34 +271,37 @@ function YMIRTransaction() {
         }
 
         toast.warn('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.');
-        dispatch({ type: 'SET_LOADER', payload: true });
+        dispatch({ type: 'SET_LOADER', payload: true })
         handleWithdrawFundClose();
-        let txHash = await ymirContract.DepositToGame(account, getDecimalAmount(withdrawFund));
+        
+        let txHash = await rokContract.DepositToGame(account, getDecimalAmount(withdrawFund));
         let confirmation = await txHash.wait();
         if (confirmation.status === 1) {
           let data = {
-            token: 'YMIR',
+            token: 'ROK',
             type: 'withdraw',
             amount: withdrawFund,
-			      hash : txHash.hash,
+      			hash : txHash.hash,
             account_id: user.account_id
           }
-          let flag = await dispatch(updateFunndBalance(data));
-
+          let flag = await dispatch(updateFunndBalance(data, user.account_id));
           if (flag === true) {
-			      data.message = `You attempted to transfer ${withdrawFund} Ymir Coins into your Game Account Wallet.`;
+      			data.message = `You attempted to transfer ${withdrawFund} RoK Points into your Game Account Wallet.`;
             dispatch(updateTempBalance(data, user.account_id));
             setWithdrawFund(0);
             dispatch({ type: 'SET_LOADER', payload: false })
-            dispatch(openModal(true, `Transfer to Game. ${withdrawFund} Ymir Coin was successfully transfered into your game account wallet.`));
+            dispatch(openModal(true, `Transfer to Game. ${withdrawFund} RoK Points was successfully transfered into your Game Account Wallet.`));
           } else {
             dispatch({ type: 'SET_LOADER', payload: false });
+            setWithdrawFund(0);
             toast.error('Something went wrong.');
           }
         } else {
-          dispatch({ type: 'SET_LOADER', payload: false })
+          dispatch({ type: 'SET_LOADER', payload: false });
+          setWithdrawFund(0);
           toast.error('Something went wrong.');
         }
+
       } catch (err) {
         dispatch({ type: 'SET_LOADER', payload: false })
         handleWithdrawFundClose();
@@ -328,6 +311,17 @@ function YMIRTransaction() {
     }
   }
 
+  useEffect(() => {
+    let ROK_action = localStorage.getItem('ROK_action')
+    if (transaction_verify_rok) {
+      if (ROK_action === 'deposit')
+        setDepositmodal(true);
+
+      if (ROK_action === 'withdraw')
+        setWithdrawmodal(true);
+    }
+  }, []);
+
   return (
     <Grid item md={6} xs={12} sx={{ px: 1, mb: 2 }}>
       <Stack
@@ -335,7 +329,7 @@ function YMIRTransaction() {
           p: 2,
           border: '1px solid #F5F6F9',
           borderRadius: '8px',
-          backgroundImage: 'url(/userpanel/bsc.png)',
+          backgroundImage: 'url(/userpanel/ymir.png)',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'right',
           backgroundSize: 'contain',
@@ -344,9 +338,9 @@ function YMIRTransaction() {
         justifyContent='space-between'
       >
         <Box>
-          <Typography component='h5' variant='h5'>Metamask : {walletBalance ? walletBalance : 0} Ymir Coin</Typography>
-          <Typography component='h5' variant='h5'>Web Wallet : {contractBalance ? contractBalance : 0} Ymir Coin</Typography>
-          <Typography component='h5' variant='h5'>Claimable : {fundBalance ? fundBalance : 0} Ymir Coin</Typography>
+          <Typography component='h5' variant='h5'>Metamask : {walletBalance ? walletBalance : 0} RoK Points </Typography>
+          <Typography component='h5' variant='h5'>Web Wallet : {contractBalance ? contractBalance : 0} RoK Points</Typography>
+          <Typography component='h5' variant='h5'>Claimable : {fundBalance ? fundBalance : 0} RoK Points</Typography>
         </Box>
         <Stack
           direction={{
@@ -365,7 +359,7 @@ function YMIRTransaction() {
           }}
           justifyContent='space-between'
         >
-          <DepositButton onClick={handleDepositFundOpen}>Claim Ymir Coins</DepositButton>
+          <DepositButton onClick={handleDepositFundOpen}>Claim RoK Points</DepositButton>
           <DepositButton onClick={handleWithdrawFundOpen}>Transfer to Game</DepositButton>
         </Stack>
       </Stack>
@@ -390,7 +384,7 @@ function YMIRTransaction() {
               <AdminTextField fullWidth label='Balance' size='small' required type='number' value={widthraw} onChange={(e) => setWidthraw(e.target.value)} />
             </Grid>
             <Stack alignItems={{ xs: 'center', width: '100%' }} direction='row' justifyContent='space-around'>
-              <AuthButton variant='outlined' fullWidth onClick={withdrawYMIR}>
+              <AuthButton variant='outlined' fullWidth onClick={withdrawROK}>
                 Withdraw
               </AuthButton>
             </Stack>
@@ -418,7 +412,7 @@ function YMIRTransaction() {
               <AdminTextField fullWidth label='Balance' size='small' required type='number' value={deposit} onChange={(e) => setDeposit(e.target.value)} />
             </Grid>
             <Stack alignItems={{ xs: 'center', width: '100%' }} direction='row' justifyContent='space-around'>
-              <AuthButton variant='outlined' fullWidth onClick={DepositYMIR}>
+              <AuthButton variant='outlined' fullWidth onClick={DepositROK}>
                 Deposit
               </AuthButton>
             </Stack>
@@ -436,12 +430,13 @@ function YMIRTransaction() {
           <Grid container>
             <Grid item xs={12} sx={{ py: { lg: 2, sm: 1, xs: 0 } }}>
               <Typography variant='h5'>
-                Claim Ymir Coins
+                Claim RoK Points
               </Typography>
               <Typography variant='p'>
-                Ymir Coin : {fundBalance}
+                RoK Points : {fundBalance}
               </Typography>
             </Grid>
+
             <Stack alignItems={{ xs: 'center', width: '100%' }} direction='row' justifyContent='space-around'>
               <AuthButton variant='outlined' fullWidth onClick={DepositFund}>
                 Claim
@@ -464,7 +459,7 @@ function YMIRTransaction() {
                 Transfer to Game
               </Typography>
               <Typography variant='p'>
-                Ymir Coin : {contractBalance}
+                RoK Points : {contractBalance}
               </Typography>
             </Grid>
             <Grid item xs={12} sx={{ py: { lg: 2, sm: 1, xs: 0 } }}>
@@ -499,8 +494,9 @@ function YMIRTransaction() {
                 <VerifyButton
                   disabled={flag}
                   onClick={() => {
-                    dispatch(resend());
+                    dispatch(resend(history));
                     setFlag(true);
+                    localStorage.setItem('start', Number(new Date()))
                   }}
                 >
                   {flag ? <CountDown flag={flag} setFlag={setFlag} /> : 'Get code'}
@@ -522,4 +518,4 @@ function YMIRTransaction() {
   );
 }
 
-export default YMIRTransaction
+export default ROKTransaction;
