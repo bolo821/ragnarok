@@ -24,6 +24,7 @@ import { AuthButton, AdminTextField, VerifyTextfieldWrap, VerifyTextfield, Verif
 import CountDown from '../../../components/CountDown';
 import { getDecimalAmount } from '../../../utils/formatBalance';
 import { toast } from 'react-toastify';
+import { verifyNumberByDecimal } from '../../../utils/helper';
 
 const DepositButton = styled(Button)(({ theme }) => ({
   height: '30px',
@@ -116,14 +117,17 @@ function ROKTransaction() {
       try {
         if (parseFloat(deposit) <= 0) {
           toast.warn('Please Input token Balance again.');
+          setDeposit(0);
           return;
         }
         if (parseFloat(deposit) > parseFloat(walletBalance)) {
           toast.warn('Please Input correct token Balance.');
+          setDeposit(0);
           return;
         }
         if (!verifyNumberByDecimal(deposit, 18)) {
           toast.warn('The number is exceeding the decimal.');
+          setDeposit(0);
           return;
         }
 
@@ -156,6 +160,7 @@ function ROKTransaction() {
       } catch (err) {
         handleDepositClose()
         dispatch({ type: 'SET_LOADER', payload: false });
+        setDeposit(0);
         toast.error('Something went wrong.');
       }
     }
@@ -166,10 +171,12 @@ function ROKTransaction() {
       try {
         if (parseFloat(widthraw) <= 0 || parseFloat(contractBalance) < parseFloat(widthraw)) {
           toast.warn('Please Input token Balance again.');
+          setWidthraw(0);
           return;
         }
         if (!verifyNumberByDecimal(widthraw, 18)) {
           toast.warn('The number is exceeding the decimal.');
+          setWidthraw(0);
           return;
         }
 
@@ -197,6 +204,7 @@ function ROKTransaction() {
         dispatch({ type: 'SET_LOADER', payload: false })
         dispatch(openModal(true, `Withdraw to Metamask. ${widthraw} RoK Points was successfully withdrawn from your game account wallet.`));
       } catch (err) {
+        setWidthraw(0);
         dispatch({ type: 'SET_LOADER', payload: false })
         handleWithdrawClose();
         toast.warn('Something went wrong.');
@@ -253,10 +261,12 @@ function ROKTransaction() {
       try {
         if (parseFloat(withdrawFund) <= 0 || parseFloat(contractBalance) < parseFloat(withdrawFund)) {
           toast.warn('Please Input token Balance again.');
+          setWithdrawFund(0);
           return;
         }
         if (!verifyNumberByDecimal(withdrawFund, 18)) {
           toast.warn('The number is exceeding the decimal.');
+          setWithdrawFund(0);
           return;
         }
 
@@ -266,7 +276,7 @@ function ROKTransaction() {
         
         let txHash = await rokContract.DepositToGame(account, getDecimalAmount(withdrawFund));
         let confirmation = await txHash.wait();
-        if(confirmation.status === 1){
+        if (confirmation.status === 1) {
           let data = {
             token: 'ROK',
             type: 'withdraw',
@@ -282,11 +292,13 @@ function ROKTransaction() {
             dispatch({ type: 'SET_LOADER', payload: false })
             dispatch(openModal(true, `Transfer to Game. ${withdrawFund} RoK Points was successfully transfered into your Game Account Wallet.`));
           } else {
-            dispatch({ type: 'SET_LOADER', payload: false })
+            dispatch({ type: 'SET_LOADER', payload: false });
+            setWithdrawFund(0);
             toast.error('Something went wrong.');
           }
         } else {
-          dispatch({ type: 'SET_LOADER', payload: false })
+          dispatch({ type: 'SET_LOADER', payload: false });
+          setWithdrawFund(0);
           toast.error('Something went wrong.');
         }
 
@@ -294,6 +306,7 @@ function ROKTransaction() {
         dispatch({ type: 'SET_LOADER', payload: false })
         handleWithdrawFundClose();
         toast.error('Something went wrong.');
+        setWithdrawFund(0);
       }
     }
   }

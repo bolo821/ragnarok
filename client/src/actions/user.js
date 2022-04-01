@@ -1,7 +1,8 @@
 import { toast } from 'react-toastify';
 import api from '../utils/api';
 import {
-  GET_USER
+  GET_USER,
+  SET_USER_DATA,
 } from './types';
 
 export const getUsers = () => async dispatch => {
@@ -51,14 +52,28 @@ export const sendMailByAdmin  = (email, title, content) => async dispatch => {
 }
 
 export const sendCoinByAdmin  = (account_id, amount, token) => async dispatch => {
-  try{
+  try {
     const body = {account_id, amount, token};
     await api.post('/users/coin', body);
     toast.success('Succss send Coin');
-  }catch(err){
+  } catch (err) {
     const errors = err.response.data.errors;
     if (errors) {
       errors.forEach(error => toast.error(error.msg));
     }
+  }
+}
+
+export const getUserData = account_id => async dispatch => {
+  try {
+    const res = await api.get(`/userdata/${account_id}`);
+    if (res && res.data) {
+      dispatch({
+        type: SET_USER_DATA,
+        payload: res.data,
+      });
+    }
+  } catch (err) {
+    console.log('error: ', err);
   }
 }

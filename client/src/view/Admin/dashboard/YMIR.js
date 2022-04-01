@@ -117,14 +117,17 @@ function YMIRTransaction() {
       try {
         if (deposit <= 0) {
           toast.warn('Please Input token Balance again.');
+          setDeposit(0);
           return;
         }
         if (parseFloat(deposit) > parseFloat(walletBalance)) {
           toast.warn('The current token amount is exceeding your balance.');
+          setDeposit(0);
           return;
         }
         if (!verifyNumberByDecimal(deposit, 18)) {
           toast.warn('The number is exceeding the decimal.');
+          setDeposit(0);
           return;
         }
 
@@ -167,6 +170,7 @@ function YMIRTransaction() {
         handleDepositClose()
         dispatch({ type: 'SET_LOADER', payload: false });
         toast.error('Something went wrong.');
+        setDeposit(0);
       }
     }
   }
@@ -177,11 +181,13 @@ function YMIRTransaction() {
       try {
         if (widthraw <= 0 || parseFloat(contractBalance) < parseFloat(widthraw)) {
           toast.warn('Please Input token Balance again.');
+          setWidthraw(0);
           return;
         }
 
         if (!verifyNumberByDecimal(widthraw, 18)) {
           toast.warn('The number is exceeding the decimal.');
+          setWidthraw(0);
           return;
         }
 
@@ -214,8 +220,8 @@ function YMIRTransaction() {
       } catch (err) {
         dispatch({ type: 'SET_LOADER', payload: false })
         handleWithdrawClose();
-        console.log(err);
         toast.error('Something went wrong.');
+        setWidthraw(0);
       }
       // localStorage.removeItem('YMIR_action');
     }
@@ -274,11 +280,13 @@ function YMIRTransaction() {
       try {
         if (withdrawFund <= 0 || parseFloat(contractBalance) < parseFloat(withdrawFund)) {
           toast.warn('Please Input token Balance again.');
+          setWithdrawFund(0);
           return;
         }
 
         if (!verifyNumberByDecimal(withdrawFund, 18)) {
           toast.warn('The number is exceeding the decimal.');
+          setWithdrawFund(0);
           return;
         }
 
@@ -314,8 +322,8 @@ function YMIRTransaction() {
       } catch (err) {
         dispatch({ type: 'SET_LOADER', payload: false })
         handleWithdrawFundClose();
-        console.log(err);
         toast.error('Something went wrong.');
+        setWithdrawFund(0);
       }
     }
   }

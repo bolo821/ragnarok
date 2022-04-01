@@ -15,8 +15,6 @@ import Auth from './Auth';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
-
 function App() {
   const isLoading = useSelector(state => state.load.loader);
 

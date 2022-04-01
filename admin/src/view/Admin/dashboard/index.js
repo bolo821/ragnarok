@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import { getLogs } from '../../../actions/logs';
+import { getUserData } from '../../../actions/user';
 import { getCharacters } from '../../../actions/character';
 import Sidebar from '../adminSidebar';
 import { AdminLayout, AdminBody, AdminMainBody } from '../../../components/adminlayout/LayoutItem';
@@ -35,6 +36,8 @@ function UserDashabord() {
   const auth = useSelector(state => state.auth);
   const logs = useSelector(state => state.logs);
   const characters = useSelector(state => state.character.characters);
+  const userData = useSelector(state => state.user);
+  const { card, costume, equipment } = userData;
 
   const { user } = auth;
   const { loglist } = logs;
@@ -43,9 +46,10 @@ function UserDashabord() {
   const [ zeny, setZeny ] = useState(0);
 
   useEffect(() => {
-    dispatch(getLogs(user?.account_id));
     if (user) {
+      dispatch(getLogs(user.account_id));
       dispatch(getCharacters(user.account_id));
+      dispatch(getUserData(user?.account_id));
     }
   }, [ user, dispatch ]);
 
@@ -116,7 +120,7 @@ function UserDashabord() {
                     src='/userpanel/item2.png'
                   />
                   <Box>
-                    <Typography component='h5' variant='h5' align='center'>0</Typography>
+                    <Typography component='h5' variant='h5' align='center'>{card}</Typography>
                     <Typography component='p' variant='p' align='center'>EQUIPMENTS</Typography>
                   </Box>
                 </Stack>
@@ -139,7 +143,7 @@ function UserDashabord() {
                     src='/userpanel/item3.png'
                   />
                   <Box>
-                    <Typography component='h5' variant='h5' align='center'>0</Typography>
+                    <Typography component='h5' variant='h5' align='center'>{costume}</Typography>
                     <Typography component='p' variant='p' align='center'>COSTUMES</Typography>
                   </Box>
                 </Stack>
@@ -162,7 +166,7 @@ function UserDashabord() {
                     src='/userpanel/item4.png'
                   />
                   <Box>
-                    <Typography component='h5' variant='h5' align='center'>0</Typography>
+                    <Typography component='h5' variant='h5' align='center'>{equipment}</Typography>
                     <Typography component='p' variant='p' align='center'>CARDS</Typography>
                   </Box>
                 </Stack>
