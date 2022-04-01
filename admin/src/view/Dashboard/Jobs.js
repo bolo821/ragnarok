@@ -1,12 +1,9 @@
 import React from 'react';
-
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-
 import NftCard from '../../components/NftCard';
-
 import { styled } from '@mui/material/styles';
 
 const JobsWrapper = styled(Box)(({ theme }) => ({

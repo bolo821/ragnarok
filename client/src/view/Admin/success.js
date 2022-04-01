@@ -1,20 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-
 import { Redirect, Link } from 'react-router-dom';
-
 import { styled } from '@mui/material/styles';
-
-import Sidebar from './adminSidebar';
-
 import { AuthLayout, AdminBody, formstyle } from '../../components/adminlayout/LayoutItem';
-import AdminHeader from '../../components/adminlayout/AdminHeader';
 
 const VerifyBody = styled(Stack)(({ theme }) => ({
   height: '100%'

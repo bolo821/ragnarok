@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react';
 
 export default function CountDown({flag, setFlag, color}) {

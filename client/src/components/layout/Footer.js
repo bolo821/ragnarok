@@ -1,13 +1,10 @@
 import React from 'react';
-
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-
 import { FaFacebookSquare, FaDiscord, FaTwitter, FaTelegramPlane } from "react-icons/fa";
-
-import { styled, alpha } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 
 const FooterWrapper = styled(Box)(({ theme }) => ({
   padding: '40px',
@@ -68,12 +65,12 @@ export default function Footer() {
 	    				<Typography variant="p" component="p" fontWeight={800} color='white' sx={{mb: 2}}>
 	              About
 	            </Typography>
-    					<a href="https://docs.ymircoin.com" target='_blank'>
+    					<a href="https://docs.ymircoin.com" target='_blank' rel='noreferrer'>
 		            <Typography variant="p" component="p" sx={{mb: 1}}>
 		              Whitepaper
 		            </Typography>
 		          </a>
-    					<a href="https://ymir.exchange" target='_blank'>
+    					<a href="https://ymir.exchange" target='_blank'  rel='noreferrer'>
 		            <Typography variant="p" component="p" sx={{mb: 1}}>
 		              Ymir Exchange
 		            </Typography>

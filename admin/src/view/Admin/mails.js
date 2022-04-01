@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { connect } from 'react-redux';
-import { useHistory, Redirect } from "react-router-dom";
-
+import { Redirect } from "react-router-dom";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -16,26 +14,12 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Modal from '@mui/material/Modal';
-import TextareaAutosize from '@mui/base/TextareaAutosize';
-
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-// import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch';
-import ImageSearchIcon from '@mui/icons-material/ImageSearch';
-
 import { styled } from '@mui/material/styles';
-
 import { setAlert } from '../../actions/alert';
 import { getLogs } from '../../actions/logs';
-
 import Sidebar from './adminSidebar';
-
 import { AdminLayout, AdminBody, AdminMainBody, AuthButton, AdminTextField } from '../../components/adminlayout/LayoutItem';
-import AdminHeader from '../../components/adminlayout/AdminHeader';
-
-import BalanceItem from './dashboard/BalanceItem';
 import { getUsers, sendMailByAdmin } from '../../actions/user';
-
-
 
 const DashboardBody = styled(Box)(({ theme }) => ({
     padding: '26px',
@@ -57,7 +41,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     '&:nth-of-type(odd)': {
         backgroundColor: theme.palette.action.hover,
     },
-    // hide last border
     '&:last-child td, &:last-child th': {
         border: 0,
     },
@@ -73,8 +56,6 @@ const modalstyle = {
     boxShadow: 24,
     p: 4,
 };
-
-
 
 function Mails({ auth, logs, users, setAlert, getLogs, getUsers, sendMailByAdmin }) {
     const { user, isAuthenticated } = auth;
@@ -92,7 +73,6 @@ function Mails({ auth, logs, users, setAlert, getLogs, getUsers, sendMailByAdmin
     useEffect(() => {
         getUsers()
     }, [getUsers])
-
 
     if (isAuthenticated) {
         if (user) {
@@ -114,7 +94,6 @@ function Mails({ auth, logs, users, setAlert, getLogs, getUsers, sendMailByAdmin
     let displayusers = userlist.slice((page - 1) * 10, page * 10);
     return (
         <>
-            {/*<AdminHeader />*/}
             <AdminLayout>
                 <AdminBody direction='row'>
                     <Sidebar />

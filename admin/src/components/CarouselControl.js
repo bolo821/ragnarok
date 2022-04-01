@@ -1,9 +1,5 @@
-import PropTypes from 'prop-types';
-
 import { FaAngleDoubleLeft, FaAngleDoubleRight } from "react-icons/fa";
-
-// material
-import { useTheme, styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 
@@ -16,7 +12,6 @@ const RootStyle = styled(Box)(({ theme }) => ({
   height: SIZE,
   width: '1000px',
   left: 'calc(50% - 470px)',
-  margin: '0 auto',
   transform: 'translate(-30px, 20px)',
   margin: 'auto',
   display: 'flex',
@@ -40,12 +35,7 @@ const ArrowStyle = styled(IconButton)(({ theme }) => ({
   fontSize: '100px'
 }));
 
-// ----------------------------------------------------------------------
-
 export default function CarouselControl({ arrowLine, onNext, onPrevious, ...other }) {
-  const theme = useTheme();
-  const isRTL = theme.direction === 'rtl';
-
   return (
     <RootStyle {...other}>
       <ArrowStyle size="small" onClick={onPrevious}>

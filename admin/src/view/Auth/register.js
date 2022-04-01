@@ -1,27 +1,20 @@
+/* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from "react-router-dom";
 import ReCAPTCHA from 'react-google-recaptcha'
 import { recaptcha as RECAPTCHA_KEY } from '../../config';
-
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-// import Modal from '@mui/material/Modal';
-
 import { styled } from '@mui/material/styles';
-
 import { useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
-
 import { setAlert } from '../../actions/alert';
 import { register } from '../../actions/auth';
-
 import { AuthWrapper, AdminBody, AdminTextField, AuthButton, formstyle } from '../../components/adminlayout/LayoutItem';
-
-import { recaptcha } from '../../config';
 
 const LoginButton = styled(Button)(({ theme }) => ({
   marginTop: "20px",
@@ -52,7 +45,7 @@ function Register() {
     address: ''
   });
 
-  const { userid, email, password, password2 } = formData;
+  const { userid, email, password } = formData;
   const [ recaptcha, setRecaptcha ] = useState(!parseInt(process.env.REACT_APP_CAPCHA));
 
   const onChange = (e) => {

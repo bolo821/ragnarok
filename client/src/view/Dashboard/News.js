@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-
 import { styled } from '@mui/material/styles';
-
 import Carousel from '../../components/Carousel';
 import { getNews } from '../../actions/news';
 

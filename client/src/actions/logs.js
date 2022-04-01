@@ -20,7 +20,7 @@ export const getLogs = (account_id) => async dispatch => {
 // Get Balance of current user (Bolo)
 export const createLogs = (account_id) => async dispatch => {
   try {
-    const res = await api.post('/logs/' + account_id);
+    await api.post('/logs/' + account_id);
 
     dispatch(getLogs(account_id))
   } catch (err) {

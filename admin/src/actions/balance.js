@@ -83,7 +83,7 @@ export const getBalance = (account_id) => async dispatch => {
 // Update Temp Balance
 export const updateTempBalance = (data, account_id) => async dispatch => {
   try {
-    const res = await api.post('/balance/updatetempbalance', data);
+    await api.post('/balance/updatetempbalance', data);
 
     dispatch(getBalance(account_id));
     dispatch(getLogs(account_id));
@@ -101,7 +101,7 @@ export const updateTempBalance = (data, account_id) => async dispatch => {
 // Update Temp Balance
 export const updateBalance = (data, account_id) => async dispatch => {
   try {
-    const res = await api.post('/balance/updatebalance', data);
+    await api.post('/balance/updatebalance', data);
 
     dispatch(getBalance(account_id));
     dispatch(getLogs(account_id));

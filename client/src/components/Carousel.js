@@ -1,10 +1,7 @@
 import React, { useRef } from 'react';
 import Slider from "react-slick";
-
 import Box from '@mui/material/Box';
-
 import { styled } from '@mui/material/styles';
-
 import CarouselControl from './CarouselControl';
 
 const RootStyle = styled('div')(({ theme }) => ({

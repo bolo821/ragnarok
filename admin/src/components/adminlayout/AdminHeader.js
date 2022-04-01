@@ -1,61 +1,22 @@
-import * as React from 'react';
+import  React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
 import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Modal from '@mui/material/Modal';
 import Grid from '@mui/material/Grid';
-
-import TwitterIcon from '@mui/icons-material/Twitter';
 import MenuIcon from '@mui/icons-material/Menu';
-import MailOutlineIcon from '@mui/icons-material/MailOutline';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import InstagramIcon from '@mui/icons-material/Instagram';
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-
 import { connect } from 'react-redux';
-
 import { Link, useHistory } from "react-router-dom";
-
-import { styled, alpha } from '@mui/material/styles';
-
+import { styled } from '@mui/material/styles';
 import {useWeb3React} from '@web3-react/core';
-import { InjectedConnector } from '@web3-react/injected-connector';
-
-import { Menu as DropMenu, MenuItem as DropMenuItem, MenuButton, SubMenu } from '@szhsin/react-menu';
+import { Menu as DropMenu, MenuItem as DropMenuItem } from '@szhsin/react-menu';
 import '@szhsin/react-menu/dist/index.css';
-
 import { logout } from '../../actions/auth';
-
-const pages = [
-  {
-    name: 'TOKENOMICS',
-    url: '#tokenomics',
-    children: []
-  },
-  {
-    name: 'HOW TO BUY',
-    url: '#howtobuy',
-    children: []
-  },
-  {
-    name: 'SERVER',
-    url: '#server',
-    children: []
-  },
-  {
-    name: 'NFT',
-    url: '#nft',
-    children: []
-  }
-];
 
 const HeaderWrapper = styled(AppBar)(({ theme }) => ({
   backgroundColor: '#282d32',
@@ -64,7 +25,6 @@ const HeaderWrapper = styled(AppBar)(({ theme }) => ({
 
 const AuthButton = styled(Button)(({ theme }) => ({
   marginRight: '20px',
-  height: '20px',
   width: '100px',
   height: '40px'
 }));
@@ -108,20 +68,14 @@ const headstyle = {
   }
 }
 
-const injected = new InjectedConnector({
-  supportedChainIds: [1, 3, 4, 5, 42, 56, 97],
-})
-
 const AdminHeader = ({logout, isAuthenticated}) => {
   const {deactivate} = useWeb3React();
 
   const [login, setLogin] = React.useState(false);
   const [register, setRegister] = React.useState(false);
 
-  const handleLoginOpen = () => setLogin(true);
   const handleLoginClose = () => setLogin(false);
 
-  const handleRegisterOpen = () => setRegister(true);
   const handleRegisterClose = () => setRegister(false);
   const history = useHistory();
   

@@ -1,10 +1,8 @@
 import React from 'react';
-
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-
 import { styled } from '@mui/material/styles';
 
 const ServerFeatureWrap = styled(Box)(({ theme }) => ({

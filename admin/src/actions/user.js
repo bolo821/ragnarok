@@ -4,7 +4,6 @@ import {
   GET_USER
 } from './types';
 
-
 export const getUsers = () => async dispatch => {
   try {
     const res = await api.get('/users/master');

@@ -1,4 +1,4 @@
-/* esling-disable */
+/* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -8,18 +8,15 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
-
 import { styled } from '@mui/material/styles';
 import { setAlert } from '../../../actions/alert';
 import { updateTempBalance, updateContractBalance, getWalletBalance, getContractBalance, updateFunndBalance, getAccountBalance } from '../../../actions/rokBalance';
 import { setTverify, transactionverifyROK, resend } from '../../../actions/auth';
 import { openModal } from '../../../actions/modal';
-
 import { rokaddress, minterAddress } from '../../../config';
 import { useContract } from '../../../hooks/useContract';
 import { getMinterContract } from '../../../utils/contracts';
 import ROKABI from '../../../services/abis/ROK.json';
-
 import { useWeb3React } from '@web3-react/core';
 import { AuthButton, AdminTextField, VerifyTextfieldWrap, VerifyTextfield, VerifyButton, formstyle } from '../../../components/adminlayout/LayoutItem';
 import CountDown from '../../../components/CountDown';

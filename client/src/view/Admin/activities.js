@@ -1,35 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
+/* eslint-disable */
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { useHistory, Redirect } from "react-router-dom";
-
+import { Redirect } from "react-router-dom";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import Pagination from '@mui/material/Pagination';
-
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-// import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch';
-import ImageSearchIcon from '@mui/icons-material/ImageSearch';
-
 import { styled } from '@mui/material/styles';
-
 import { setAlert } from '../../actions/alert';
 import { getLogs } from '../../actions/logs';
-
 import Sidebar from './adminSidebar';
-
 import { AdminLayout, AdminBody, AdminMainBody } from '../../components/adminlayout/LayoutItem';
-import AdminHeader from '../../components/adminlayout/AdminHeader';
-
 import LogItem from './dashboard/LogItem';
-
 import { useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
 
 const injected = new InjectedConnector({
-  supportedChainIds: [1, 3, 4, 5, 42, 56, 97],
+  supportedChainIds: [ 56, 97 ],
 })
 
 const DashboardBody = styled(Box)(({ theme }) => ({

@@ -344,9 +344,8 @@ export const walletuser = (wallet, history) => async dispatch => {
 // Change User
 export const changeUser = (userid, history) => async dispatch => {
   try {
-    const res = await api.post('/auth/updateuser', { userid });
+    await api.post('/auth/updateuser', { userid });
     dispatch(setAlert('Succefully changed.', 'success'))
-    // dispatch(loadUser(history));
   } catch (err) {
     let errors;
     if (err.response) {
@@ -363,9 +362,8 @@ export const changeUser = (userid, history) => async dispatch => {
 // Change UserID
 export const changeEmail = (email, history) => async dispatch => {
   try {
-    const res = await api.post('/auth/email', { email });
+    await api.post('/auth/email', { email });
     dispatch(setAlert('Succefully changed. You need to verify you email again.', 'success'))
-    // dispatch(loadUser(history));
   } catch (err) {
     let errors;
     if (err.response) {
@@ -381,10 +379,8 @@ export const changeEmail = (email, history) => async dispatch => {
 
 export const forgotpassword = (searchkey) => async dispatch => {
   try {
-    const res = await api.post('/auth/forgotpassword', searchkey);
-
+    await api.post('/auth/forgotpassword', searchkey);
     dispatch(setAlert('You will receive new password on your email.', 'success'))
-    // dispatch(loadUser());
   } catch (err) {
     let errors;
     if (err.response) {

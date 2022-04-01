@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import { styled, ThemeProvider, createTheme } from '@mui/material/styles';
@@ -12,28 +11,16 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Paper from '@mui/material/Paper';
-
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import SettingsIcon from '@mui/icons-material/Settings';
-import NewsIon from '@mui/icons-material/NewReleases';
-
 import { useWeb3React } from '@web3-react/core';
-
-
 import { Link } from "react-router-dom";
 
 const data = [
   { icon: <DashboardIcon />, label: 'Dashboard', url: '/dashboard' },
   { icon: <AssignmentIcon />, label: 'Activities', url: '/activities' },
   { icon: <SettingsIcon />, label: 'Account Management', url: '/manageaccount' },
-  // { icon: <NewsIon />, label: 'News', url: '/news' },
-  // { icon: <AssignmentIcon />, label: 'Users', url: '/users' },
-  // { icon: <AssignmentIcon />, label: 'Balances', url: '/balances' },
-  // { icon: <AssignmentIcon />, label: 'Mail', url: '/mail' },
-  // { icon: <AssignmentIcon />, label: 'Transactions', url: '/transactions' },
-  // { icon: <AssignmentIcon />, label: 'Tokens', url: '/tokens' },
-  // { icon: <AssignmentIcon />, label: 'Mode', url: '/mode' },
 ];
 
 const FireNav = styled(List)({

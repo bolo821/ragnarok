@@ -1,34 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
-
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-
 import { Redirect } from 'react-router-dom';
-
-import { FaFacebookSquare, FaDiscord, FaTwitter, FaTelegramPlane } from "react-icons/fa";
-
-import { styled, alpha } from '@mui/material/styles';
-
-import {useWeb3React} from '@web3-react/core';
-import { InjectedConnector } from '@web3-react/injected-connector';
-
+import { styled } from '@mui/material/styles';
 import { useHistory } from "react-router-dom";
-
 import { transactionverify, resend } from '../../actions/auth';
-
-import Sidebar from './adminSidebar';
-
-import { AuthLayout, AdminBody, AdminMainBody, AuthButton, formstyle } from '../../components/adminlayout/LayoutItem';
-import AdminHeader from '../../components/adminlayout/AdminHeader';
-
-const injected = new InjectedConnector({
-  supportedChainIds: [1, 3, 4, 5, 42, 56, 97],
-})
+import { AuthLayout, AdminBody, AuthButton, formstyle } from '../../components/adminlayout/LayoutItem';
 
 const VerifyBody = styled(Stack)(({ theme }) => ({
   height: '100%'

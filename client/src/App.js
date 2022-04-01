@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import './App.css';
 import { getMode } from './actions/mode';
-
 import Maintenance from './view/Dashboard/Maintenance';
 import Header from './components/layout/Header';
 import Alert from './components/Alert';
@@ -13,7 +12,6 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import LoadingOverlay from 'react-loading-overlay';
 import Auth from './Auth';
-
 import { SOCKET } from './utils/api';
 import { logout } from './actions/auth';
 

@@ -1,5 +1,4 @@
 import React from 'react';
-
 import Jobs from './Jobs';
 import News from './News';
 import ServerFeature from './ServerFeature';

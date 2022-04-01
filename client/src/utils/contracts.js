@@ -4,12 +4,10 @@ import {AddressZero} from '@ethersproject/constants';
 import api from './api';
 import jwt_decode from 'jwt-decode';
 import { RPC_url } from '../config';
-//import { Provide }  from '@truffle/hdwallet-provider';
+
 const Provide = require('@truffle/hdwallet-provider');
 const Web3 = require('web3');
-// import {Web3Provider} from '@ethersproject/providers';
 
-// returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value) {
   try {
     return getAddress(value);

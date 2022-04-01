@@ -21,8 +21,6 @@ import Sidebar from './adminSidebar';
 import { AdminLayout, AdminBody, AdminMainBody, AuthButton, AdminTextField } from '../../components/adminlayout/LayoutItem';
 import { getUsers, sendCoinByAdmin } from '../../actions/user';
 
-
-
 const DashboardBody = styled(Box)(({ theme }) => ({
     padding: '26px',
     paddingBottom: '0',
@@ -99,10 +97,9 @@ function Tokens({ auth, logs, users, setAlert, getLogs, getUsers, sendCoinByAdmi
         sendCoinByAdmin(id, amount, type);
     }
 
-    let displayusers = userlist.filter(m => m.group_id == 0).slice((page - 1) * 10, page * 10);
+    let displayusers = userlist.filter(m => m.group_id === 0).slice((page - 1) * 10, page * 10);
     return (
         <>
-            {/*<AdminHeader />*/}
             <AdminLayout>
                 <AdminBody direction='row'>
                     <Sidebar />

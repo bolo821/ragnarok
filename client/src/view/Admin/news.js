@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
-
 import { styled } from '@mui/material/styles';
 import { addNews } from '../../actions/news';
 import Sidebar from './adminSidebar';
 import { AdminLayout, AdminBody, AdminMainBody } from '../../components/adminlayout/LayoutItem';
-
 import { getNews, deleteNews } from '../../actions/news';
 import { AuthButton, AdminTextField } from '../../components/adminlayout/LayoutItem';
 import { Input } from '@mui/material';
@@ -132,11 +129,6 @@ function News() {
     setLink(ele.link);
     setId(ele.id);
     handleOpenEditModal();
-  }
-
-  const handleUpdate = () => {
-    handleCloseEditModal();
-
   }
   
   const handleRemove = () => {

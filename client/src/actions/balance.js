@@ -9,8 +9,6 @@ import {
   GET_ROK_BALANCE,
   GET_YMIR_FUND_BALANCES,
   GET_ROK_FUND_BALANCES,
-  GET_YMIR_WALLET_BALENCES,
-  GET_ROK_WALLET_BALANCES,
 } from './types';
 
 // Get Balances
@@ -85,7 +83,7 @@ export const getBalance = (account_id) => async dispatch => {
 // Update Temp Balance
 export const updateTempBalance = (data, account_id) => async dispatch => {
   try {
-    const res = await api.post('/balance/updatetempbalance', data);
+    await api.post('/balance/updatetempbalance', data);
 
     dispatch(getBalance(account_id));
     dispatch(getLogs(account_id));
@@ -103,7 +101,7 @@ export const updateTempBalance = (data, account_id) => async dispatch => {
 // Update Temp Balance
 export const updateBalance = (data, account_id) => async dispatch => {
   try {
-    const res = await api.post('/balance/updatebalance', data);
+    await api.post('/balance/updatebalance', data);
 
     dispatch(getBalance(account_id));
     dispatch(getLogs(account_id));

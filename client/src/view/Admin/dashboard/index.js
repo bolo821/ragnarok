@@ -1,27 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useSelector, useDispatch } from 'react-redux';
-
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import ImageSearchIcon from '@mui/icons-material/ImageSearch';
-
 import { styled } from '@mui/material/styles';
-
-import { setAlert } from '../../../actions/alert';
 import { getLogs } from '../../../actions/logs';
 import { getCharacters } from '../../../actions/character';
-
 import Sidebar from '../adminSidebar';
-// import Footer from '../../../components/layout/Footer';
-
 import { AdminLayout, AdminBody, AdminMainBody } from '../../../components/adminlayout/LayoutItem';
-// import AdminHeader from '../../../components/adminlayout/AdminHeader';
-
 import YMIR from './YMIR';
 import ROK from './ROK';
 import LogItem from './LogItem';

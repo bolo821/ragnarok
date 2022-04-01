@@ -1,5 +1,4 @@
 import { SET_MINTER_KEY } from './types';
-
 import api from '../utils/api';
 
 export const getMinterKey = () => dispatch => {

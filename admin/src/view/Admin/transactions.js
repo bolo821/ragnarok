@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { useHistory, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -15,26 +14,12 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-// import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch';
-import ImageSearchIcon from '@mui/icons-material/ImageSearch';
-
 import { styled } from '@mui/material/styles';
-
 import { setAlert } from '../../actions/alert';
 import { getLogs } from '../../actions/logs';
-
 import Sidebar from './adminSidebar';
-
 import { AdminLayout, AdminBody, AdminMainBody } from '../../components/adminlayout/LayoutItem';
-import AdminHeader from '../../components/adminlayout/AdminHeader';
-
-import BalanceItem from './dashboard/BalanceItem';
 import { getTokenBalances } from '../../actions/balance';
-import { txUrl } from '../../config';
-
-
 
 const DashboardBody = styled(Box)(({ theme }) => ({
     padding: '26px',
@@ -68,8 +53,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 function Transactions({ auth, logs, balances, setAlert, getLogs, getTokenBalances }) {
     const { user, isAuthenticated } = auth;
     const { loglist } = logs;
-    const ymirlogs = loglist.filter(m => m.type == 'YMIR');
-    const roklogs = loglist.filter(m => m.type == 'ROK');
+    const ymirlogs = loglist.filter(m => m.type === 'YMIR');
+    const roklogs = loglist.filter(m => m.type === 'ROK');
 
     const [page, setPage] = React.useState(1);
     const handleChange = (event, value) => {
@@ -120,7 +105,7 @@ function Transactions({ auth, logs, balances, setAlert, getLogs, getTokenBalance
                                                     displayymirs ? displayymirs.map((item, i) => (
                                                         <StyledTableRow key={i}>
                                                             <StyledTableCell component="th" scope="row">
-                                                                <a href={'https://testnet.bscscan.com/tx/' + item.hash} target='_blank'>
+                                                                <a href={'https://testnet.bscscan.com/tx/' + item.hash} target='_blank' rel="noreferrer">
                                                                     {item.hash}
                                                                 </a>
                                                             </StyledTableCell>
@@ -168,7 +153,7 @@ function Transactions({ auth, logs, balances, setAlert, getLogs, getTokenBalance
                                                     displayroks ? displayroks.map((item, i) => (
                                                         <StyledTableRow key={i}>
                                                             <StyledTableCell component="th" scope="row">
-                                                                <a href={'https://testnet.bscscan.com/tx/' + item.hash} target='_blank'>
+                                                                <a href={'https://testnet.bscscan.com/tx/' + item.hash} target='_blank' rel="noreferrer">
                                                                     {item.hash}
                                                                 </a>
                                                             </StyledTableCell>

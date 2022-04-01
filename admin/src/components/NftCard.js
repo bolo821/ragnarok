@@ -1,11 +1,8 @@
 import React from 'react';
-
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-import Grid from '@mui/material/Grid';
-
-import { styled, alpha } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 
 const NftCardWrapper = styled(Box)(({ theme }) => ({
   height: '300px',

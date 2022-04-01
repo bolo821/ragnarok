@@ -1,4 +1,4 @@
-import { SET_ALERT, REMOVE_ALERT, SET_LOADER } from '../actions/types';
+import { SET_LOADER } from '../actions/types';
 
 const initialState = {
     loader : false

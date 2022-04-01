@@ -1,22 +1,16 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-
-
 import { styled } from '@mui/material/styles';
 import { useHistory } from "react-router-dom";
-
 import { emailverify, resend } from '../../actions/auth';
-
 import { AdminBody, AuthButton, formstyle } from '../../components/adminlayout/LayoutItem';
 import CountDown from '../../components/CountDown';
-
 
 const VerifyBody = styled(Stack)(({ theme }) => ({
   height: '100%'

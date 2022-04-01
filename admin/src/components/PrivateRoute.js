@@ -15,11 +15,7 @@ function PrivateRoute ({ component: Component, ...rest }) {
         loading ? (
           <Spinner />
         ) : 
-        // isAuthenticated ? (
           <Component {...props} />
-        // ) : (
-          // <Redirect to="/login" />
-        // )
       }
     />
   );
