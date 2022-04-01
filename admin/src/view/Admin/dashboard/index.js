@@ -120,7 +120,7 @@ function UserDashabord() {
                     src='/userpanel/item2.png'
                   />
                   <Box>
-                    <Typography component='h5' variant='h5' align='center'>{card}</Typography>
+                    <Typography component='h5' variant='h5' align='center'>{equipment}</Typography>
                     <Typography component='p' variant='p' align='center'>EQUIPMENTS</Typography>
                   </Box>
                 </Stack>
@@ -166,7 +166,7 @@ function UserDashabord() {
                     src='/userpanel/item4.png'
                   />
                   <Box>
-                    <Typography component='h5' variant='h5' align='center'>{equipment}</Typography>
+                    <Typography component='h5' variant='h5' align='center'>{card}</Typography>
                     <Typography component='p' variant='p' align='center'>CARDS</Typography>
                   </Box>
                 </Stack>

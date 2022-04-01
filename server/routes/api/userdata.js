@@ -30,7 +30,7 @@ router.get('/:account_id', async (req, res) => {
         equipments = equipments.map(ele => ele.nameid);
     
         let card = 0, costume = 0, equipment = 0;
-    
+
         for (let i=0; i<totalData.length; i++) {
             if (cards.includes(totalData[i].nameid)) card += totalData[i].amount;
             else if (costumes.includes(totalData[i].nameid)) costume += totalData[i].amount;
