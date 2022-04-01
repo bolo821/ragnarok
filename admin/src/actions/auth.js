@@ -11,6 +11,7 @@ import {
   TRANSACTINO_VERIFYED,
   SET_VLOAD,
   AFTER_LOGIN,
+  TRANSACTION_VERIFYED_ROK,
 } from './types';
 
 import { SOCKET } from '../utils/api';
@@ -215,6 +216,37 @@ export const setTverify = (value) => async dispatch => {
   // localStorage.setItem('transactionverify', value);
   dispatch({
     type: TRANSACTINO_VERIFYED,
+    payload: value
+  });
+}
+
+// Transaction Verify (Bolo)
+export const transactionverifyROK = (code, callback) => async dispatch => {
+  try {
+    dispatch({
+      type: SET_VLOAD,
+      payload: true
+    });
+    const res = await api.post('/auth/verifyemail', { code });
+
+    if (res && res.data) {
+      dispatch(setAlert('Verify your email succefully.', 'success'))
+      dispatch(setTverifyROK(true));
+      callback();
+    } else {
+      dispatch(setAlert('Verify Code was not matched. Please confirm again.', 'warning'))
+    }
+  } catch (err) {
+    const errors = err.response.data.errors;
+    if (errors) {
+      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+    }
+  }
+};
+
+export const setTverifyROK = (value) => async dispatch => {
+  dispatch({
+    type: TRANSACTION_VERIFYED_ROK,
     payload: value
   });
 }

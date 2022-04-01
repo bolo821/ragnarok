@@ -7,7 +7,6 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
-import { SOCKET } from '../../../utils/api';
 import { styled } from '@mui/material/styles';
 import { setAlert } from '../../../actions/alert';
 import { updateTempBalance, updateContractBalance, getWalletBalance, getContractBalance, updateFunndBalance, getAccountBalance } from '../../../actions/ymirBalance';
@@ -73,7 +72,7 @@ function YMIRTransaction() {
       dispatch(getWalletBalance(ymirContract, account));
       dispatch(getContractBalance(ymirContract, account));
       dispatch(getAccountBalance(user.account_id));
-    }, 5000);
+    }, 2000);
     return () => clearInterval(timer);
   }, []);
 

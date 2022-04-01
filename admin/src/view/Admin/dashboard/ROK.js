@@ -1,3 +1,4 @@
+/* esling-disable */
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -9,10 +10,9 @@ import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 
 import { styled } from '@mui/material/styles';
-
 import { setAlert } from '../../../actions/alert';
 import { updateTempBalance, updateContractBalance, getWalletBalance, getContractBalance, updateFunndBalance, getAccountBalance } from '../../../actions/rokBalance';
-import { setTverify, transactionverify, resend } from '../../../actions/auth';
+import { setTverify, transactionverifyROK, resend } from '../../../actions/auth';
 import { openModal } from '../../../actions/modal';
 
 import { rokaddress, minterAddress } from '../../../config';
@@ -49,7 +49,7 @@ const modalstyle = {
 function ROKTransaction() {
   const dispatch = useDispatch();
   const auth = useSelector(state => state.auth);
-  const { user, transaction_verify } = auth;
+  const { user, transaction_verify_rok } = auth;
   const balance = useSelector(state => state.rok);
   const { contractBalance, walletBalance, fundBalance } = balance;
   const rokContract = useContract(rokaddress, ROKABI);
@@ -58,17 +58,16 @@ function ROKTransaction() {
 
   const [deposit, setDeposit] = useState(0);
   const [widthraw, setWidthraw] = useState(0);
-  const [depositFund, setDepositFund] = useState(0);
   const [withdrawFund, setWithdrawFund] = useState(0);
 
   const [code, setCode] = useState('');
   const [flag, setFlag] = useState(false);
 
-  const [depositmodal, setDepositmodal] = React.useState(false);
-  const [withdrawmodal, setWithdrawmodal] = React.useState(false);
-  const [depositFundmodal, setDepositFundmodal] = React.useState(false);
-  const [withdrawFundmodal, setWithdrawFundmodal] = React.useState(false);
-  const [verifymodal, setVerifymodal] = React.useState(false);
+  const [depositmodal, setDepositmodal] = useState(false);
+  const [withdrawmodal, setWithdrawmodal] = useState(false);
+  const [depositFundmodal, setDepositFundmodal] = useState(false);
+  const [withdrawFundmodal, setWithdrawFundmodal] = useState(false);
+  const [verifymodal, setVerifymodal] = useState(false);
 
 
 
@@ -83,7 +82,7 @@ function ROKTransaction() {
 
   const onVerify = async (e) => {
     e.preventDefault();
-    dispatch(transactionverify(code, handleVerifyClose));
+    dispatch(transactionverifyROK(code, handleVerifyClose));
   };
 
   const handleDepositOpen = () => {
@@ -93,7 +92,7 @@ function ROKTransaction() {
   const handleDepositClose = () => setDepositmodal(false);
 
   const handleWithdrawOpen = () => {
-    if (!transaction_verify) {
+    if (!transaction_verify_rok) {
       handleVerifyOpen();
       return;
     }
@@ -107,16 +106,20 @@ function ROKTransaction() {
   const handleVerifyOpen = () => setVerifymodal(true);
   const handleVerifyClose = () => setVerifymodal(false);
 
-
+  useEffect(() => {
+    if (transaction_verify_rok) {
+      handleWithdrawOpen();
+    }
+  }, [ transaction_verify_rok ]);
 
   const DepositROK = async () => {
     if (window.confirm("You are trying to deposit " + deposit + " RoK Points. Click confirm to proceed.")) {
       try {
-        if (deposit <= 0) {
+        if (parseFloat(deposit) <= 0) {
           dispatch(setAlert('Please Input token Balance again.', 'warning'));
           return;
         }
-        if (deposit > walletBalance) {
+        if (parseFloat(deposit) > parseFloat(walletBalance)) {
           dispatch(setAlert('Please Input correct token Balance.', 'warning'));
           return;
         }
@@ -158,7 +161,7 @@ function ROKTransaction() {
   const withdrawROK = async () => {
     if (window.confirm("You are trying to deposit " + widthraw + " RoK Points. Click confirm to proceed.")) {
       try {
-        if (widthraw <= 0 || contractBalance < widthraw) {
+        if (parseFloat(widthraw) <= 0 || parseFloat(contractBalance) < parseFloat(widthraw)) {
           dispatch(setAlert('Please Input token Balance again.', 'warning'));
           return;
         }
@@ -198,7 +201,7 @@ function ROKTransaction() {
     if (window.confirm("You are trying to Claim " + fundBalance + " Rok Points. Click confirm to proceed.")) {
       try {
         let fundDepositBalance = await dispatch(getAccountBalance(user.account_id));
-        if (fundDepositBalance <= 0) {
+        if (parseFloat(fundDepositBalance) <= 0) {
           dispatch(setAlert('Please Token Balance again.', 'warning'));
           return;
         }
@@ -220,7 +223,6 @@ function ROKTransaction() {
           data.message = `You attempted to claim ${fundDepositBalance} RoK Points.`;
           dispatch(updateTempBalance(data, user.account_id));
           dispatch(getAccountBalance(user.account_id));
-          setDepositFund(0);
           dispatch({ type: 'SET_LOADER', payload: false });
           dispatch(openModal(true, `Claim Rok Points. ${fundDepositBalance} RoK Points was successfully claimed from your Game Account wallet.`));
         } else {
@@ -238,7 +240,7 @@ function ROKTransaction() {
   const WithdrawFund = async () => {
     if (window.confirm("You are trying to Transfer " + withdrawFund + " Rok Points into your Game Account Wallet. Click confirm to proceed.")) {
       try {
-        if (withdrawFund <= 0 || contractBalance < withdrawFund) {
+        if (parseFloat(withdrawFund) <= 0 || parseFloat(contractBalance) < parseFloat(withdrawFund)) {
           dispatch(setAlert('Please Input token Balance again.', 'warning'));
           return;
         }
@@ -283,14 +285,14 @@ function ROKTransaction() {
 
   useEffect(() => {
     let ROK_action = localStorage.getItem('ROK_action')
-    if (transaction_verify) {
+    if (transaction_verify_rok) {
       if (ROK_action === 'deposit')
         setDepositmodal(true);
 
       if (ROK_action === 'withdraw')
         setWithdrawmodal(true);
     }
-  }, [])
+  }, []);
 
   return (
     <Grid item md={6} xs={12} sx={{ px: 1, mb: 2 }}>

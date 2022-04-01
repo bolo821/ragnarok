@@ -8,6 +8,7 @@ import {
   GET_SUBACCOUNT,
   SET_VLOAD,
   AFTER_LOGIN,
+  TRANSACTION_VERIFYED_ROK,
 } from '../actions/types';
 
 const initialState = {
@@ -17,7 +18,8 @@ const initialState = {
   vloading: false,
   user: null,
   users: [],
-  transaction_verify: false
+  transaction_verify: false,
+  transaction_verify_rok: false,
 };
 
 function authReducer(state = initialState, action) {
@@ -73,6 +75,13 @@ function authReducer(state = initialState, action) {
         ...state,
         user: payload,
         loading: false,
+      }
+    }
+    case TRANSACTION_VERIFYED_ROK: {
+      return {
+        ...state,
+        loading: false,
+        transaction_verify_rok: payload,
       }
     }
     default:

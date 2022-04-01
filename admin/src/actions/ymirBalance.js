@@ -1,16 +1,10 @@
-import { useWeb3React } from '@web3-react/core';
 import Web3 from 'web3';
-import { RPC_url, ymiraddress } from '../config';
-import { useContract } from '../hooks/useContract';
-import YMIRABI from '../services/abis/YMIR.json';
+import { RPC_url } from '../config';
 import api from '../utils/api';
 import { getBalanceAmount } from '../utils/formatBalance';
 import { setAlert } from './alert';
 import { getLogs } from './logs';
 import {
-  GET_BALANCES,
-  GET_BALANCE,
-  UPDATE_BALANCE,
   GET_YMIR_WALLET_BALANCE,
   GET_YMIR_CONTRACT_BALANCE,
   GET_YMIR_FUND_BALANCE

@@ -7,7 +7,6 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
-import { SOCKET } from '../../../utils/api';
 import { styled } from '@mui/material/styles';
 import { setAlert } from '../../../actions/alert';
 import { updateTempBalance, updateContractBalance, getWalletBalance, getContractBalance, updateFunndBalance, getAccountBalance } from '../../../actions/ymirBalance';
@@ -167,7 +166,6 @@ function YMIRTransaction() {
         dispatch({ type: 'SET_LOADER', payload: false })
         dispatch(setAlert('Something went wrong.', 'error'));
       }
-      // localStorage.removeItem('YMIR_action');
     }
   }
 
@@ -211,7 +209,6 @@ function YMIRTransaction() {
         console.log(err)
         dispatch(setAlert('Something went wrong.', 'error'));
       }
-      // localStorage.removeItem('YMIR_action');
     }
   }
 
