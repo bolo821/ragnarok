@@ -180,6 +180,12 @@ function YMIRTransaction() {
           dispatch(setAlert('Please Input token Balance again.', 'warning'));
           return;
         }
+
+        if (!verifyNumberByDecimal(widthraw, 18)) {
+          dispatch(setAlert('The number is exceeding the decimal.', 'warning'));
+          return;
+        }
+
         dispatch(setAlert('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.', 'warning', 10000));
         handleWithdrawClose();
         dispatch({ type: 'SET_LOADER', payload: true });
@@ -225,6 +231,12 @@ function YMIRTransaction() {
           dispatch(setAlert('Please Token Balance again.', 'warning'));
           return;
         }
+
+        if (!verifyNumberByDecimal(fundDepositBalance, 18)) {
+          dispatch(setAlert('The number is exceeding the decimal.', 'warning'));
+          return;
+        }
+
         dispatch(setAlert('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.', 'warning', 10000));
         handleDepositFundClose()
         dispatch({ type: 'SET_LOADER', payload: true })
@@ -265,6 +277,12 @@ function YMIRTransaction() {
           dispatch(setAlert('Please Input token Balance again.', 'warning'));
           return;
         }
+
+        if (!verifyNumberByDecimal(withdrawFund, 18)) {
+          dispatch(setAlert('The number is exceeding the decimal.', 'warning'));
+          return;
+        }
+
         dispatch(setAlert('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.', 'warning', 10000));
         dispatch({ type: 'SET_LOADER', payload: true });
         handleWithdrawFundClose();

@@ -123,6 +123,10 @@ function ROKTransaction() {
           dispatch(setAlert('Please Input correct token Balance.', 'warning'));
           return;
         }
+        if (!verifyNumberByDecimal(deposit, 18)) {
+          dispatch(setAlert('The number is exceeding the decimal.', 'warning'));
+          return;
+        }
 
         dispatch(setAlert('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.', 'warning', 10000));
         handleDepositClose()
@@ -165,6 +169,10 @@ function ROKTransaction() {
           dispatch(setAlert('Please Input token Balance again.', 'warning'));
           return;
         }
+        if (!verifyNumberByDecimal(widthraw, 18)) {
+          dispatch(setAlert('The number is exceeding the decimal.', 'warning'));
+          return;
+        }
 
         dispatch(setAlert('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.', 'warning', 10000));
         handleWithdrawClose();
@@ -205,6 +213,10 @@ function ROKTransaction() {
           dispatch(setAlert('Please Token Balance again.', 'warning'));
           return;
         }
+        if (!verifyNumberByDecimal(fundDepositBalance, 18)) {
+          dispatch(setAlert('The number is exceeding the decimal.', 'warning'));
+          return;
+        }
 
         dispatch(setAlert('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.', 'warning', 10000));
         handleDepositFundClose()
@@ -242,6 +254,10 @@ function ROKTransaction() {
       try {
         if (parseFloat(withdrawFund) <= 0 || parseFloat(contractBalance) < parseFloat(withdrawFund)) {
           dispatch(setAlert('Please Input token Balance again.', 'warning'));
+          return;
+        }
+        if (!verifyNumberByDecimal(withdrawFund, 18)) {
+          dispatch(setAlert('The number is exceeding the decimal.', 'warning'));
           return;
         }
 
