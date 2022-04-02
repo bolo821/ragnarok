@@ -14,6 +14,8 @@ import LoadingOverlay from 'react-loading-overlay';
 import Auth from './Auth';
 import { SOCKET } from './utils/api';
 import { logout } from './actions/auth';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const dispatch = useDispatch();
@@ -32,6 +34,7 @@ function App() {
   if (mode === 'active') 
     return (
       <LoadingOverlay active={isLoading} spinner text='Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.'>
+        <ToastContainer pauseOnFocusLoss={false} autoClose={5000} hideProgressBar={false} closeOnClick />
         <Router>
           <Alert />
           <SuccessModal />
