@@ -143,20 +143,29 @@ export const emailverify = (code, history) => async (dispatch, getState) => {
     const res = await api.post('/auth/verifyemail', { code });
 
     if (res && res.data) {
-      setAuthToken(res.data.token);
-      toast.success('Your email is successfully verified.');
       const decoded = jwt_decode(res.data.token);
-      SOCKET.emit('SET_SESSION', decoded.user.account_id);
-      dispatch({
-        type: USER_LOADED,
-        payload: decoded.user,
-      });
-      dispatch({
-        type: LOGIN_SUCCESS,
-        payload: res.data
-      });
+      SOCKET.emit('CHECK_LOGGED_IN', decoded.user.account_id, new_login => {
+        if (new_login) {
+          setAuthToken(res.data.token);
+          toast.success('Your email is successfully verified.');
+          dispatch({
+            type: USER_LOADED,
+            payload: decoded.user,
+          });
+          dispatch({
+            type: LOGIN_SUCCESS,
+            payload: res.data
+          });
 
-      history.push('/dashboard');
+          history.push('/dashboard');
+        } else {
+          toast.error('You already logged in another place. Please logout and try again.');
+          setTimeout(() => {
+            window.open("about:blank", "_self");
+            window.close();  
+          }, 3000);
+        }
+      });
     }
   } catch (err) {
     const errors = err.response.data.errors;

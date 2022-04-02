@@ -14,6 +14,16 @@ module.exports = (server, options) => {
 			}
 		});
 
+		socket.on('CHECK_LOGGED_IN', (account_id, callback) => {
+			if (Object.values(users).includes(account_id)) {
+				callback(false);
+			} else {
+				callback(true);
+				User.setSession(account_id, 1);
+				users = { ...users, [ socket.id ]: account_id };
+			}
+		});
+
 		socket.on('SET_SESSION', account_id => {
 			User.setSession(account_id, 1);
 			users = { ...users, [ socket.id ]: account_id };
