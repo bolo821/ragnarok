@@ -80,7 +80,8 @@ router.post(
           return res
             .status(400)
             .json({ errors: [{ msg: 'Invalid Credentials' }] });
-        } if (isAdmin && user.group_id !== 99) {
+        } 
+        if (isAdmin && user.group_id !== 99) {
           return res.status(401).json({
             errors: [{ msg: 'You are not an adminnistrator.' }],
           });

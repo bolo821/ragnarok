@@ -257,7 +257,7 @@ function YMIRTransaction() {
           const ymirMinterContract = await getMinterContract(ymiraddress, YMIRABI);
           let txHash = await ymirMinterContract.methods.WithdrawFromGame(account, getDecimalAmount(fundDepositBalance)).send({ from: minterAddress });
 		      data.hash = txHash.transactionHash;
-          data.message = `You attempted to claim ${fundDepositBalance} Ymir Coins`;
+          data.message = `You attempted to claim ${fundDepositBalance} Ymir Coins from your Game Account Wallet.`;
           dispatch(updateTempBalance(data, user.account_id));
           dispatch(getAccountBalance(user.account_id));
           dispatch({ type: 'SET_LOADER', payload: false });
@@ -472,7 +472,7 @@ function YMIRTransaction() {
             </Grid>
             <Stack alignItems={{ xs: 'center', width: '100%' }} direction='row' justifyContent='space-around'>
               <AuthButton variant='outlined' fullWidth onClick={WithdrawFund}>
-                Withdraw
+                Transfer to Game
               </AuthButton>
             </Stack>
           </Grid>

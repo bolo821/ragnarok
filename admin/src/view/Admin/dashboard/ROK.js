@@ -239,7 +239,7 @@ function ROKTransaction() {
           const rokMinterContract = await getMinterContract(rokaddress, ROKABI);
           let txHash = await rokMinterContract.methods.WithdrawFromGame(account, getDecimalAmount(fundDepositBalance)).send({ from: minterAddress });
     		  data.hash = txHash.transactionHash;
-          data.message = `You attempted to claim ${fundDepositBalance} RoK Points.`;
+          data.message = `You attempted to claim ${fundDepositBalance} RoK Points from your Game Account Wallet.`;
           dispatch(updateTempBalance(data, user.account_id));
           dispatch(getAccountBalance(user.account_id));
           dispatch({ type: 'SET_LOADER', payload: false });
@@ -467,7 +467,7 @@ function ROKTransaction() {
             </Grid>
             <Stack alignItems={{ xs: 'center', width: '100%' }} direction='row' justifyContent='space-around'>
               <AuthButton variant='outlined' fullWidth onClick={WithdrawFund}>
-                Withdraw
+                 Transfer to Game
               </AuthButton>
             </Stack>
           </Grid>
