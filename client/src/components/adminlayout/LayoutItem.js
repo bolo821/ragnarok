@@ -123,12 +123,11 @@ export const formstyle = {
 function AdminLayoutCom({ children }) {
   const authState = useSelector(state => state.auth);
   const { user, isAuthenticated } = authState;
-  const {account, activate, active} = useWeb3React();
-  const [auth, setAuth] = useState(false);
+  const { account, activate, active, chainId } = useWeb3React();
+  const [ auth, setAuth ] = useState(false);
 
   useEffect(() => {
     if (!account) {
-      toast.warn('Please connect to your wallet');
       activate(injected);
     }
   }, [ account ])
@@ -137,17 +136,22 @@ function AdminLayoutCom({ children }) {
 
   useEffect(() => {
     if(active && isAuthenticated) {
-      if(user && user.wallet !== account){
+      if (chainId !== 97) {
+        toast.warn('Current network is not supported. Please connect another network.');
         ref.current = false;
-        window.alert('Current wallet is not your wallet. Please connect your wallet.', 'warning');
       } else {
-        ref.current = true;
+        if(user && user.wallet !== account){
+          ref.current = false;
+          toast.warn('Current wallet is not your wallet. Please connect your wallet.');
+        } else {
+          ref.current = true;
+        }
       }
     } else {
       ref.current = false;
     }
     setAuth(ref.current)
-  }, [active, isAuthenticated]);
+  }, [ active, isAuthenticated, account, chainId ]);
 
   return (
     <AdminWrapper>
