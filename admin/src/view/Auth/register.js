@@ -65,6 +65,9 @@ function Register() {
   const validate = () => {
     return formData.username !== '' && formData.email !== '' && formData.password !== '' && formData.password2 !== '' && recaptcha;
   }
+  const validateNameLength = () => {
+    return formData.username.length >= 4 && formData.username.length <= 15;
+  }
 
   useEffect(() => {
     setFormData({ ...formData, address: account });
@@ -84,6 +87,8 @@ function Register() {
     e.preventDefault();
     if (!validate()) {
       toast.warn('Please fill all fields.');
+    } else if (!validateNameLength()) {
+      toast.warn('Name length should be between 4 and 15.');
     } else if (formData.password !== formData.password2) {
       toast.warn('Passwords do not match.');
     } else if (formData.address === '') {

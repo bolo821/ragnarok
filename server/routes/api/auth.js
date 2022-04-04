@@ -6,30 +6,13 @@ const jwt = require('jsonwebtoken');
 const config = require('config');
 const { check, validationResult } = require('express-validator');
 var crypto = require('crypto');
-
+const getMailServer = require('../../config/mailServer');
 const User = require('../../models/User');
 const Wallet = require('../../models/Wallet');
 const Verify = require('../../models/Verify');
 const AccBalance = require('../../models/AccBalance');
 const AccFund = require('../../models/AccFund');
 const Logs = require('../../models/Logs');
-
-const nodemailerHost = config.get('nodemailer.host')
-const nodemailerPort = config.get('nodemailer.port')
-const nodemailerUser = config.get('nodemailer.user')
-const nodemailerPass = config.get('nodemailer.pass')
-
-const nodemailer = require('nodemailer');
-
-var transporter = nodemailer.createTransport({
-  host: nodemailerHost,
-  port: nodemailerPort,
-  secure: true,
-  auth: {
-    user: nodemailerUser,
-    pass: nodemailerPass
-  }
-});
 
 // @route    GET api/auth
 // @desc     Get user by token
@@ -221,37 +204,45 @@ router.get('/resendcode', auth, async (req, res) => {
           errors: [{ msg: err.message || "Some error occurred while creating the User." }]
         });
 
-      var emailContentToClient = {
-        from: nodemailerUser,
-        to: user.email,
-        subject: 'Confirmation Code!',
-        html: `
-        <html>
-          <body>
-            <div class="container" style="text-align: center;">
-              <div class="row" style="margin: 20px 0px;">
-                <div class="col-md-12">
-                  <div class="text-center">
-                    Your confirmation code is ${verifycode}.
+      getMailServer((transporter, server) => {
+        if (transporter) {
+          var emailContentToClient = {
+            from: server.username,
+            to: user.email,
+            subject: 'Confirmation Code!',
+            html: `
+            <html>
+              <body>
+                <div class="container" style="text-align: center;">
+                  <div class="row" style="margin: 20px 0px;">
+                    <div class="col-md-12">
+                      <div class="text-center">
+                        Your confirmation code is ${verifycode}.
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </body>
-        </html>`
-      }
+              </body>
+            </html>`
+          }
 
-      transporter.sendMail(emailContentToClient, function (error, body) {
-        if(body) {
-          res.json({
-            success: true
+          transporter.sendMail(emailContentToClient, function (error, body) {
+            if (body) {
+              res.json({
+                success: true
+              });
+            } else {
+              return res.status(500).json({
+                errors: [{ msg: "Something was wrong. Try again." }]
+              });
+            }
           });
         } else {
-          return res.status(500).json({
-            errors: [{ msg: "Something was wrong. Try again." }]
-          });
+          res.status(500).json({
+            errors: [{ msg: "Mail server error." }],
+          })
         }
-      })
+      });
     })
   })
 });
@@ -353,46 +344,60 @@ router.post('/forgotpassword', async (req, res) => {
             errors: [{ msg: "Change failed. Try again." }]
           });
 
-        var emailContentToClient = {
-          from: nodemailerUser,
-          to: user.email ? user.email : master.email,
-          subject: 'New password',
-          html: `
-          <html>
-            <body>
-              <div class="container" style="text-align: center;">
-                <div class="row" style="margin: 20px 0px;">
-                  <div class="col-md-12">
-                    <div class="text-center">
-                      ${user.email ? user.email : master.email}
-                      Thank you. This is new Password for ${user.userid}
-                      ${newpass}
+        getMailServer((transporter, server) => {
+          if (transporter) {
+            var emailContentToClient = {
+              from: server.username,
+              to: user.email ? user.email : master.email,
+              subject: 'New password',
+              html: `
+              <html>
+                <body>
+                  <div class="container" style="text-align: center;">
+                    <div class="row" style="margin: 20px 0px;">
+                      <div class="col-md-12">
+                        <div class="text-center">
+                          ${user.email ? user.email : master.email}
+                          Thank you. This is new Password for ${user.userid}
+                          ${newpass}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </body>
-          </html>`
-        }
-
-        transporter.sendMail(emailContentToClient, function (error, body) {
-          var today = new Date();
-          var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-          var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-
-          Logs.create({
-            account_id: master.account_id,
-            message: `Forgot password for subuser ${user.userid}.`,
-            amount: 1,
-            type : 'FORGOT_PASSWORD_SUBUSER',
-            date: date + ' ' + time,
-            hash: null,
-          }, async (err, newlog) => {
-            return res.json({
-              success: true,
+                </body>
+              </html>`
+            }
+  
+            transporter.sendMail(emailContentToClient, function (error, body) {
+              if (body) {
+                var today = new Date();
+                var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+                var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+      
+                Logs.create({
+                  account_id: master.account_id,
+                  message: `Forgot password for subuser ${user.userid}.`,
+                  amount: 1,
+                  type : 'FORGOT_PASSWORD_SUBUSER',
+                  date: date + ' ' + time,
+                  hash: null,
+                }, async (err, newlog) => {
+                  return res.json({
+                    success: true,
+                  });
+                });
+              } else {
+                return res.status(500).json({
+                  errors: [{ msg: "Something was wrong. Try again." }]
+                });
+              }
             });
-          });
-        })
+          } else {
+            res.status(500).json({
+              errors: [{ msg: "Mail server error." }],
+            })
+          }
+        });
       })
     })
   })
@@ -482,31 +487,43 @@ router.post('/email', auth, async (req, res) => {
           errors: [{ msg: err.message || "Some error occurred while creating the User." }]
         });
 
-      var emailContentToClient = {
-        from: nodemailerUser,
-        to: user.email,
-        subject: 'Confirmation Code!',
-        html: `
-        <html>
-          <body>
-            <div class="container" style="text-align: center;">
-              <div class="row" style="margin: 20px 0px;">
-                <div class="col-md-12">
-                  <div class="text-center">
-                    Your confirmation code is ${verifycode}.
+      getMailServer((transporter, server) => {
+        if (transporter) {
+          var emailContentToClient = {
+            from: server.username,
+            to: user.email,
+            subject: 'Confirmation Code!',
+            html: `
+            <html>
+              <body>
+                <div class="container" style="text-align: center;">
+                  <div class="row" style="margin: 20px 0px;">
+                    <div class="col-md-12">
+                      <div class="text-center">
+                        Your confirmation code is ${verifycode}.
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </body>
-        </html>`
-      }
+              </body>
+            </html>`
+          }
 
-      transporter.sendMail(emailContentToClient, function (error, body) {
-        console.log(body)
-      })
-
-      return res.json({success: true})
+          transporter.sendMail(emailContentToClient, function (error, body) {
+            if (body) {
+              return res.json({success: true});
+            } else {
+              return res.status(500).json({
+                errors: [{ msg: "Something was wrong. Try again." }]
+              });
+            }
+          });
+        } else {
+          res.status(500).json({
+            errors: [{ msg: "Mail server error." }],
+          })
+        }
+      });
     })
   })
 });

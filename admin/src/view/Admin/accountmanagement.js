@@ -145,9 +145,9 @@ function AccountManagement() {
   }
 
   const Withdraw = async () => {
-    if(window.confirm("You are trying to deposit "+ withdraw+" Ymir Coin. Click confirm to proceed.")) {
+    if (window.confirm("You are trying to deposit "+ withdraw+" Ymir Coin. Click confirm to proceed.")) {
       try {
-        if(withdraw <= 0 || sub < withdraw) {
+        if (withdraw <= 0 || sub < withdraw) {
           toast.warn('Please Input token Balance again.');
           return;
         }
@@ -179,7 +179,6 @@ function AccountManagement() {
     }
   }
 
-
   const onChange = (e) => {
     if (e.target.name === "userid" && e.target.value !== '') {
       if (e.target.value.match(/\W/)) {
@@ -193,6 +192,10 @@ function AccountManagement() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   }
 
+  const validateNameLength = () => {
+    return userid.length >= 4 && userid.length <= 15;
+  }
+
   // Register sub user.
   const onRegister = async (e) => {
     e.preventDefault();
@@ -201,6 +204,8 @@ function AccountManagement() {
     }
     if (password !== password2) {
       toast.warn('Passwords do not match');
+    } else if (!validateNameLength()) {
+      toast.warn('Name length should be between 4 and 15.');
     } else {
       dispatch(registerSubaccount({ userid, password, wallet: account }));
       handleAddClose();

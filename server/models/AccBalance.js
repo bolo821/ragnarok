@@ -14,13 +14,9 @@ AccBalance.findById = (account_id, token, result) => {
       return;
     }
     if (res.length > 0) {
-    
       result(null, res[0]);
-      return;
     } else {
-     
-      result(null, false);
-      return;
+      result(null, { value: 0 });
     }
   });
 };

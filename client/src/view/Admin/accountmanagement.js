@@ -193,6 +193,10 @@ function AccountManagement() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   }
 
+  const validateNameLength = () => {
+    return userid.length >= 4 && userid.length <= 15;
+  }
+
   // Register sub user.
   const onRegister = async (e) => {
     e.preventDefault();
@@ -201,6 +205,8 @@ function AccountManagement() {
     }
     if (password !== password2) {
       toast.warn('Passwords do not match');
+    } else if (!validateNameLength()) {
+      toast.warn('Name length should be between 4 and 15.');
     } else {
       dispatch(registerSubaccount({ userid, password, wallet: account }));
       handleAddClose();

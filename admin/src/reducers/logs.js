@@ -1,9 +1,11 @@
 import {
-	GET_LOGS
+	GET_LOGS,
+  SET_ALL_LOGS,
 } from '../actions/types';
 
 const initialState = {
-	loglist: []
+	loglist: [],
+  logAll: [],
 };
 
 function logsReducer(state = initialState, action) {
@@ -15,6 +17,12 @@ function logsReducer(state = initialState, action) {
       	...state,
       	loglist: payload ? payload.data : 0
       };
+    case SET_ALL_LOGS: {
+      return {
+        ...state,
+        logAll: payload,
+      }
+    }
     default:
       return state;
   }

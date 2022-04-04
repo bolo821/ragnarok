@@ -7,7 +7,7 @@ const Minter = function(item) {
 }
 
 Minter.findAll = (result) => {
-  mariaDB.query(`SELECT * from minter`, (err, res) => {
+  mariaDB.query(`SELECT * from warportal`, (err, res) => {
     if (res.length > 0) {
         result(null, res);
     } else {

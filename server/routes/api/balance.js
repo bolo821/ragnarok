@@ -8,26 +8,8 @@ const Logs = require('../../models/Logs');
 const UserBalance = require('../../models/UserBalance');
 const UserFund = require('../../models/UserFund');
 const config = require('config');
-
-
-const nodemailerHost = config.get('nodemailer.host')
-const nodemailerPort = config.get('nodemailer.port')
-const nodemailerUser = config.get('nodemailer.user')
-const nodemailerPass = config.get('nodemailer.pass')
-
-const nodemailer = require('nodemailer');
+const getMailServer = require('../../config/mailServer');
 const User = require('../../models/User');
-
-var transporter = nodemailer.createTransport({
-  host: nodemailerHost,
-  port: nodemailerPort,
-  secure: true,
-  auth: {
-    user: nodemailerUser,
-    pass: nodemailerPass
-  }
-});
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 router.get('/list/:token', async (req, res) => {
@@ -98,37 +80,44 @@ router.post(
         type : token,
         date: date + ' ' + time
       }, async (err, newlog) => {
-
         User.findOne({ account_id: account_id }, async (err, user) => {
-          var emailContentToClient = {
-            from: nodemailerUser,
-            to: user.email,
-            subject: 'You have deposited successfully.',
-            html: `
-            <html>
-              <body>
-                <div class="container" style="text-align: center;">
-                  <div class="row" style="margin: 20px 0px;">
-                    <div class="col-md-12">
-                      <div class="text-center">
-                        Thank you. ${message}
+          getMailServer((transporter, server) => {
+            if (transporter) {
+              var emailContentToClient = {
+                from: server.username,
+                to: user.email,
+                subject: 'Confirmation Code!',
+                html: `
+                <html>
+                  <body>
+                    <div class="container" style="text-align: center;">
+                      <div class="row" style="margin: 20px 0px;">
+                        <div class="col-md-12">
+                          <div class="text-center">
+                            Thank you. ${message}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </body>
-            </html>`
-          }
+                  </body>
+                </html>`
+              }
     
-          transporter.sendMail(emailContentToClient, function (error, body) {
-            if(body) {
-              return res.json(true)
-            } else {
-              return res.status(500).json({
-                errors: [{ msg: "Something was wrong. Try again." }]
+              transporter.sendMail(emailContentToClient, function (error, body) {
+                if (body) {
+                  return res.json(true)
+                } else {
+                  return res.status(500).json({
+                    errors: [{ msg: "Something was wrong. Try again." }]
+                  });
+                }
               });
+            } else {
+              res.status(500).json({
+                errors: [{ msg: "Mail server error." }],
+              })
             }
-          })
+          });
         });
       })
     });

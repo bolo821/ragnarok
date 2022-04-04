@@ -40,10 +40,10 @@ export const updateUser = (account_id, state) => dispatch => {
 }
 
 export const sendMailByAdmin  = (email, title, content) => async dispatch => {
-  try{
-    const body = {email, title, content};
+  try {
+    const body = { email, title, content };
     await api.post('/users/mail', body);
-  }catch(err){
+  } catch (err) {
     const errors = err.response.data.errors;
     if (errors) {
       errors.forEach(error => toast.error(error.msg));

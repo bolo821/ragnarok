@@ -30,7 +30,7 @@ function Activities() {
   const dispatch = useDispatch();
   const auth = useSelector(state => state.auth);
   const logs = useSelector(state => state.logs);
-  const { user, isAuthenticated } = auth;
+  const { user } = auth;
   const { loglist } = logs;
 
   const {account, activate} = useWeb3React();
@@ -40,7 +40,7 @@ function Activities() {
     setPage(value);
   };
 
-  useEffect(() => { // check current wallet is exist in database
+  useEffect(() => {
     if(!account) {
       activate(injected);
     }
@@ -50,19 +50,10 @@ function Activities() {
     dispatch(getLogs(user.account_id));
   }, [getLogs])
 
-  if (isAuthenticated) {
-    if(user) {
-      if(user.verify === 0) {
-        return <Redirect to="/emailverification" />;
-      }
-    }
-  }
-
   let displaylogs = loglist.slice((page - 1) * 10, page * 10);
 
   return (
     <>
-      {/*<AdminHeader />*/}
       <AdminLayout>
         <AdminBody direction='row'>
           <Sidebar />

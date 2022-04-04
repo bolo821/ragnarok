@@ -2,30 +2,10 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../../middleware/auth');
 
-const AccBalance = require('../../models/AccBalance');
 const AccBalanceTemp = require('../../models/AccBalanceTemp');
 const Logs = require('../../models/Logs');
-const config = require('config');
-
-
-const nodemailerHost = config.get('nodemailer.host')
-const nodemailerPort = config.get('nodemailer.port')
-const nodemailerUser = config.get('nodemailer.user')
-const nodemailerPass = config.get('nodemailer.pass')
-
-const nodemailer = require('nodemailer');
-const User = require('../../models/User');
 const AccFund = require('../../models/AccFund');
 
-var transporter = nodemailer.createTransport({
-  host: nodemailerHost,
-  port: nodemailerPort,
-  secure: true,
-  auth: {
-    user: nodemailerUser,
-    pass: nodemailerPass
-  }
-});
 // @route    GET api/balance
 // @desc     Get balance by user
 // @access   Private

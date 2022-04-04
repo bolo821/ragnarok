@@ -29,9 +29,12 @@ const data = [
   { icon: <AssignmentIcon />, label: 'Users', url: '/users' },
   { icon: <AssignmentIcon />, label: 'Balances', url: '/balances' },
   // { icon: <AssignmentIcon />, label: 'Mail', url: '/mail' },
-  // { icon: <AssignmentIcon />, label: 'Transactions', url: '/transactions' },
   // { icon: <AssignmentIcon />, label: 'Tokens', url: '/tokens' },
   { icon: <AssignmentIcon />, label: 'Mode', url: '/mode' },
+  { icon: <AssignmentIcon />, label: 'Ymir Transactions', url: '/transactionsymir' },
+  { icon: <AssignmentIcon />, label: 'Rok Transactions', url: '/transactionsrok' },
+  { icon: <AssignmentIcon />, label: 'Logs', url: '/logs' },
+  { icon: <AssignmentIcon />, label: 'Mail Server', url: '/mailserver' },
 ];
 
 const FireNav = styled(List)({

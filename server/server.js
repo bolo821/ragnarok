@@ -33,6 +33,7 @@ app.use('/api/character', require('./routes/api/character'));
 app.use('/api/minter', require('./routes/api/minter'));
 app.use('/api/mode', require('./routes/api/mode'));
 app.use('/api/userdata', require('./routes/api/userdata'));
+app.use('/api/mailserver', require('./routes/api/mailserver'));
 
 app.use(express.static(path.join(__dirname, '/public')));
 const PORT = process.env.PORT;

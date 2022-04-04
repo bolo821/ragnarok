@@ -135,37 +135,29 @@ function YMIRTransaction() {
         handleDepositClose();
 
         dispatch({ type: 'SET_LOADER', payload: true });
+        let txHash = await ymirContract.deposit(getDecimalAmount(deposit));
+        let confirmation = await txHash.wait();
 
-        // SOCKET.emit('START_TRANSACTION', user.account_id, async (can_start) => {
-        //   if (can_start) {
-            let txHash = await ymirContract.deposit(getDecimalAmount(deposit));
-            let confirmation = await txHash.wait();
-    
-            let data = {
-              token: 'YMIR',
-              hash: txHash.hash,
-              account_id: user.account_id
-            }
-    
-            if (confirmation.status === 1) {
-              data.amount = parseFloat(deposit);
-              data.message = `You attempted to deposit ${deposit} Ymir Coins from your Metamask Wallet.`;
-            } else {
-              data.amount = deposit;
-              data.message = `Your deposit attempt from Metamask Wallet has failed.`;
-            }
-    
-            dispatch(updateTempBalance(data, user.account_id));
-            dispatch(setTverify(false));
-            setDeposit(0);
-            dispatch({ type: 'SET_LOADER', payload: false })
-            dispatch(openModal(true, `Deposit from Metamask. ${deposit} Ymir Coin was successfully deposited into your game account wallet.`));
+        let data = {
+          token: 'YMIR',
+          hash: txHash.hash,
+          account_id: user.account_id,
+          
+        }
 
-        //     SOCKET.emit('END_TRANSACTION', user.account_id);
-        //   } else {
-        //     dispatch({ type: 'SET_LOADER', payload: false })
-        //   }
-        // });
+        if (confirmation.status === 1) {
+          data.amount = parseFloat(deposit);
+          data.message = `You attempted to deposit ${deposit} Ymir Coins from your Metamask Wallet.`;
+        } else {
+          data.amount = deposit;
+          data.message = `Your deposit attempt from Metamask Wallet has failed.`;
+        }
+
+        dispatch(updateTempBalance(data, user.account_id));
+        dispatch(setTverify(false));
+        setDeposit(0);
+        dispatch({ type: 'SET_LOADER', payload: false })
+        dispatch(openModal(true, `Deposit from Metamask. ${deposit} Ymir Coin was successfully deposited into your game account wallet.`));
       } catch (err) {
         handleDepositClose()
         dispatch({ type: 'SET_LOADER', payload: false });

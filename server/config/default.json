@@ -1,6 +1,6 @@
 {
-  "mongoURI": "mongodb://localhost:27017/alturas1",
-  "jwtSecret": "secret",
+  "mongoURI": "mongodb://localhost:27017/ragnarok",
+  "jwtSecret": "ZWN2cHltOHgwdWcw",
   "githubToken": "",
   "nodemailer" : {
   	"host": "mail.smtp2go.com",

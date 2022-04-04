@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Redirect } from "react-router-dom";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -57,16 +56,14 @@ const modalstyle = {
 
 function Mails() {
     const dispatch = useDispatch();
-    const auth = useSelector(state => state.auth);
     const users = useSelector(state => state.user);
-    const { user, isAuthenticated } = auth;
     const { userlist } = users;
-    const [usermail, setUserMail] = useState(null);
-    const [sendMail, setSendMail] = React.useState(false);
-    const [title, setTitle] = useState('');
-    const [content, setContent] = useState('');
+    const [ usermail, setUserMail ] = useState(null);
+    const [ sendMail, setSendMail ] = React.useState(false);
+    const [ title, setTitle ] = useState('');
+    const [ content, setContent ] = useState('');
 
-    const [page, setPage] = React.useState(1);
+    const [ page, setPage ] = React.useState(1);
     const handleChange = (event, value) => {
         setPage(value);
     };
@@ -74,14 +71,6 @@ function Mails() {
     useEffect(() => {
         dispatch(getUsers());
     }, [ dispatch ])
-
-    if (isAuthenticated) {
-        if (user) {
-            if (user.verify === 0) {
-                return <Redirect to="/emailverification" />;
-            }
-        }
-    }
 
     const handleMail = (email) => {
         setUserMail(email);

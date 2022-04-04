@@ -1,3 +1,4 @@
+const res = require("express/lib/response");
 const mariaDB = require("./DB.js");
 
 const Logs = function(LogItem) {
@@ -28,6 +29,30 @@ Logs.find = (data, result) => {
     result(null, null);
   });
 };
+
+Logs.findAll = (result) => {
+  mariaDB.query("SELECT login.userid as userid, login.wallet as wallet, `logs`.account_id as account_id, `logs`.message as message, `logs`.`hash` as `hash`, `logs`.date as date, `logs`.type as type, `logs`.amount as amount FROM `logs` JOIN login WHERE `logs`.account_id = login.account_id", (err, res) => {
+    if (res.length > 0) {
+      return result(null, res);
+    }
+    result(null, null);
+  });
+};
+
+Logs.findByInterval = (start, end, result) => {
+  mariaDB.query("SELECT login.userid as userid, login.wallet as wallet, `logs`.account_id as account_id, `logs`.message as message, `logs`.`hash` as `hash`, `logs`.date as date, `logs`.type as type, `logs`.amount as amount FROM `logs` JOIN login WHERE `logs`.account_id = login.account_id" + 
+  ` AND date >= '${start}' AND date <= '${end}'`, (err, data) => {
+    if (err) {
+      return result(err, null);
+    } else {
+      if (data.length > 0) {
+        result(null, data);
+      } else {
+        result(null, []);
+      }
+    }
+  })
+}
 
 Logs.findById = (account_id, result) => {
   mariaDB.query(`SELECT * FROM logs WHERE account_id = '${account_id}' ORDER BY date DESC`, (err, res) => {
