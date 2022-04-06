@@ -52,8 +52,8 @@ export async function getMinterContract(address, ABI) {
   }
 
   const res = await api.get('/minter');
-  if (res && res.data && res.data.token) {
-    const key = jwt_decode(res.data.token);
+  if (res && res.data && res.data.key) {
+    const key = jwt_decode(res.data.key);
     const minterkey = key.key;
     const provider = new Provide(minterkey, RPC_url);
 

@@ -58,7 +58,31 @@ const SearchBox = styled(TextField)(({ theme }) => ({
     },
 }));
 
+const getDateString = in_date => {
+    let date = new Date(in_date);
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
 
+    if (month < 10) month = `0${month}`;
+    if (day < 10) day = `0${day}`;
+
+    return `${year}-${month}-${day}`;
+}
+
+const getTimeString = in_date => {
+    let date_str = getDateString(in_date);
+    let date = new Date(in_date);
+    let hour = date.getHours();
+    let minute = date.getMinutes();
+    let second = date.getSeconds();
+
+    if (hour < 10) hour = `0${hour}`;
+    if (minute < 10) hour = `0${minute}`;
+    if (second < 10) second = `0${second}`;
+
+    return `${date_str} ${hour}:${minute}:${second}`;
+}
 
 function TransactionsRok() {
     const dispatch = useDispatch();
@@ -149,6 +173,7 @@ function TransactionsRok() {
                                                     <StyledTableCell onClick={() => sortTable('amount')}>Amount</StyledTableCell>
                                                     <StyledTableCell onClick={() => sortTable('wallet')}>Wallet</StyledTableCell>
                                                     <StyledTableCell onClick={() => sortTable('message')}>Transaction Type</StyledTableCell>
+                                                    <StyledTableCell onClick={() => sortTable('date')}>Transaction Date</StyledTableCell>
                                                     <StyledTableCell onClick={() => sortTable('hash')}>Transaction Hash</StyledTableCell>
                                                 </TableRow>
                                             </TableHead>
@@ -162,6 +187,7 @@ function TransactionsRok() {
                                                             <StyledTableCell component="td" scope="row">
                                                                 { getTransactionType(item.message) }
                                                             </StyledTableCell>
+                                                            <StyledTableCell component="td" scope="row">{ getTimeString(item.date) }</StyledTableCell>
                                                             <StyledTableCell component="td" scope="row">
                                                                 <a href={'https://testnet.bscscan.com/tx/' + item.hash} target='_blank' rel="noreferrer">
                                                                     { item.hash }
