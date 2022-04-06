@@ -5,8 +5,6 @@ import { useHistory } from 'react-router-dom';
 import { autoLogin, logout } from './actions/auth';
 import { SOCKET } from './utils/api';
 
-var gHistory = null;
-
 const Auth = props => {
     const { children } = props;
     const dispatch = useDispatch();
@@ -14,7 +12,7 @@ const Auth = props => {
 
     useEffect(() => {
         SOCKET.on('FORCE_LOGOUT', () => {
-            dispatch(logout(gHistory));
+            dispatch(logout());
         });
     }, []);
 

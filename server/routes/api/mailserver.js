@@ -1,8 +1,9 @@
 const router = require('express').Router();
 const MailServer = require('../../models/MailServer');
 const nodemailer = require('nodemailer');
+const auth = require('../../middleware/auth');
 
-router.post('/', (req, res) => {
+router.post('/', auth, (req, res) => {
     try {
         var transporter = nodemailer.createTransport({
             host: req.body.host,

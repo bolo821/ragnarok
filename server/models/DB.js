@@ -7,7 +7,8 @@ const pool = mariadb.createConnection({
 	database: process.env.DB,
 	port: 3306,
 	connectionLimit: 5,
-	acquireTimeout : 100000
+	acquireTimeout : 1000000000,
+	connectTimeout: 360000000
 });
 
 pool.connect((error) => {

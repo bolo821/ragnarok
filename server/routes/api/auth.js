@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcryptjs');
 const auth = require('../../middleware/auth');
 const jwt = require('jsonwebtoken');
 const config = require('config');
@@ -75,7 +74,7 @@ router.post(
         jwt.sign(
           payload,
           config.get('jwtSecret'),
-          { expiresIn: 3600 * 3 },
+          { expiresIn: 60 },
           (err, token) => {
             if (err) throw err;
             res.json({ token });
@@ -387,6 +386,7 @@ router.post('/forgotpassword', async (req, res) => {
                   });
                 });
               } else {
+                console.log('error: ', error);
                 return res.status(500).json({
                   errors: [{ msg: "Something was wrong. Try again." }]
                 });

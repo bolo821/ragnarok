@@ -1,5 +1,7 @@
+/* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -76,6 +78,7 @@ function AccountManagement() {
   const { account } = useWeb3React();
   const { user, users } = auth;
   const [ flag, setFlag ] = useState(true);
+  const history = useHistory();
 
   const [formData, setFormData] = useState({
     userid: '',
@@ -145,9 +148,9 @@ function AccountManagement() {
   }
 
   const Withdraw = async () => {
-    if(window.confirm("You are trying to deposit "+ withdraw+" Ymir Coin. Click confirm to proceed.")) {
+    if (window.confirm("You are trying to deposit "+ withdraw+" Ymir Coin. Click confirm to proceed.")) {
       try {
-        if(withdraw <= 0 || sub < withdraw) {
+        if (withdraw <= 0 || sub < withdraw) {
           toast.warn('Please Input token Balance again.');
           return;
         }
@@ -179,7 +182,6 @@ function AccountManagement() {
     }
   }
 
-
   const onChange = (e) => {
     if (e.target.name === "userid" && e.target.value !== '') {
       if (e.target.value.match(/\W/)) {
@@ -208,7 +210,7 @@ function AccountManagement() {
     } else if (!validateNameLength()) {
       toast.warn('Name length should be between 4 and 15.');
     } else {
-      dispatch(registerSubaccount({ userid, password, wallet: account }));
+      dispatch(registerSubaccount({ userid, password, wallet: account }, history));
       handleAddClose();
     }
     setFormData({
@@ -223,7 +225,7 @@ function AccountManagement() {
     if (password !== password2) {
       toast.warn('Passwords do not match');
     } else {
-      dispatch(changePassword({ password2, password, currentpassword, account_id, account_name, parent_user_id: user.account_id }));
+      dispatch(changePassword({ password2, password, currentpassword, account_id, account_name, parent_user_id: user.account_id }, history));
       setFormData({
         ...formData,
         currentpassword: '',
@@ -236,7 +238,7 @@ function AccountManagement() {
   };
 
   useEffect(() => {
-    dispatch(getSubaccounts());
+    dispatch(getSubaccounts(history));
     setFlag(true);
   }, [ dispatch ])
 
@@ -378,7 +380,7 @@ function AccountManagement() {
                   <Typography
                     style={{color: '#1c4f9c', cursor: 'pointer'}}
                     onClick={() => {
-                      dispatch(forgotpassword({account_id}));
+                      dispatch(forgotpassword({account_id}, history));
                       handlePasswordClose();
                     }}
                   >

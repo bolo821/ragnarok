@@ -1,7 +1,8 @@
 const router = require('express').Router();
 const Minter = require('../../models/Minter');
+const auth = require('../../middleware/auth');
 
-router.get('/', (req, res) => {
+router.get('/', auth, (req, res) => {
     try {
         Minter.findAll((err, data) => {
             if (err) {

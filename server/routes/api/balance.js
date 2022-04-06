@@ -12,7 +12,7 @@ const getMailServer = require('../../config/mailServer');
 const User = require('../../models/User');
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-router.get('/list/:token', async (req, res) => {
+router.get('/list/:token', auth, async (req, res) => {
   UserBalance.findAll(req.params.token, (err, data) => {
       if (err)
       res.status(500).send({
@@ -23,7 +23,7 @@ router.get('/list/:token', async (req, res) => {
   });
 });
 
-router.get('/fundlist/:token', async (req, res) => {
+router.get('/fundlist/:token', auth, async (req, res) => {
   UserFund.findAll(req.params.token, (err, data) => {
       if (err)
       res.status(500).send({
@@ -37,17 +37,24 @@ router.get('/fundlist/:token', async (req, res) => {
 // @route    GET api/balance
 // @desc     Get balance by user
 // @access   Private
-router.get('/:id/:token', async (req, res) => {
-  AccBalance.findById(req.params.id, req.params.token, (err, data) => {
-    if (err)
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while finding user."
-      });
-    else {
-      res.send(data);
-    } 
-  });
+router.get('/:id/:token', auth, async (req, res) => {
+  try {
+    AccBalance.findById(req.params.id, req.params.token, (err, data) => {
+      if (err)
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while finding user."
+        });
+      else {
+        res.send(data);
+      } 
+    });
+  } catch (err) {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while finding user."
+    });
+  }
 });
 
 // @route    POST api/balance/updatetempbalance

@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Mode = require('../../models/Mode');
+const auth = require('../../middleware/auth');
 
 exports.getMode = () => {
     try {
@@ -37,7 +38,7 @@ router.get('/', (req, res) => {
     }
 });
 
-router.put('/:mode', (req, res) => {
+router.put('/:mode', auth, (req, res) => {
     const { mode } = req.params;
     try {
         Mode.update(mode, (err, data) => {

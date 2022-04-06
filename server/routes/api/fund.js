@@ -9,7 +9,7 @@ const AccFund = require('../../models/AccFund');
 // @route    GET api/balance
 // @desc     Get balance by user
 // @access   Private
-router.get('/:id/:token', async (req, res) => {
+router.get('/:id/:token', auth, async (req, res) => {
   AccFund.findById(req.params.id, req.params.token, (err, data) => {
     if (err)
       res.status(500).send({

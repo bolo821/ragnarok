@@ -10,7 +10,7 @@ import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import {useWeb3React} from '@web3-react/core';
 import { useHistory } from "react-router-dom";
-import { forgotpassword, walletuser } from '../../actions/auth';
+import { forgotpassword } from '../../actions/auth';
 import { AuthWrapper, AdminBody, AuthButton, AdminTextField, formstyle } from '../../components/adminlayout/LayoutItem';
 import CountDown from '../../components/CountDown';
 
@@ -20,7 +20,7 @@ const LoginBody = styled(Stack)(({ theme }) => ({
 
 function ForgotPassword() {
   const dispatch = useDispatch();
-  const {account, deactivate } = useWeb3React();
+  const {deactivate } = useWeb3React();
   const history = useHistory();
 
   const [formData, setFormData] = useState({
@@ -34,13 +34,6 @@ function ForgotPassword() {
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-
-  useEffect(() => {
-    if(account) {
-      dispatch(walletuser(account, history));
-    }
-  }, [account])
-
   useEffect(() => { // check current wallet is exist in database
     deactivate();
     return () => {
@@ -50,7 +43,7 @@ function ForgotPassword() {
 
   const handleSubmit = () => {
     if (recaptcha) {
-      dispatch(forgotpassword({email}));
+      dispatch(forgotpassword({email}, history));
     }
   }
 

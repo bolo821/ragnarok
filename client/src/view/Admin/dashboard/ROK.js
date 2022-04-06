@@ -503,7 +503,7 @@ function ROKTransaction() {
                 </VerifyButton>
               </VerifyTextfieldWrap>
               <Typography variant="p" color='#aaa'>
-                Enter the 6-digit code sent to  {user.email.split('@')[0].slice(0, 4)}***@{user.email.split('@')[1]}
+                Enter the 6-digit code sent to  {user?.email.split('@')[0].slice(0, 4)}***@{user?.email.split('@')[1]}
               </Typography>
             </Grid>
             <Stack alignItems={{ xs: 'center', width: '100%' }} direction='row' justifyContent='space-around'>

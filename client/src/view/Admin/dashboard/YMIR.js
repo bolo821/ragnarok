@@ -1,6 +1,7 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -44,6 +45,7 @@ const modalstyle = {
 };
 
 function YMIRTransaction() {
+  const history = useHistory();
   const dispatch = useDispatch();
   const auth = useSelector(state => state.auth);
   const { user, transaction_verify } = auth;
@@ -65,13 +67,10 @@ function YMIRTransaction() {
   const [verifymodal, setVerifymodal] = useState(false);
 
   useEffect(() => {
-      dispatch(getWalletBalance(ymirContract, account));
-      dispatch(getContractBalance(ymirContract, account));
-      dispatch(getAccountBalance(user.account_id));
     const timer = setInterval(() => {
       dispatch(getWalletBalance(ymirContract, account));
       dispatch(getContractBalance(ymirContract, account));
-      dispatch(getAccountBalance(user.account_id));
+      dispatch(getAccountBalance(user.account_id, history));
     }, 2000);
     return () => clearInterval(timer);
   }, []);
@@ -135,37 +134,29 @@ function YMIRTransaction() {
         handleDepositClose();
 
         dispatch({ type: 'SET_LOADER', payload: true });
+        let txHash = await ymirContract.deposit(getDecimalAmount(deposit));
+        let confirmation = await txHash.wait();
 
-        // SOCKET.emit('START_TRANSACTION', user.account_id, async (can_start) => {
-        //   if (can_start) {
-            let txHash = await ymirContract.deposit(getDecimalAmount(deposit));
-            let confirmation = await txHash.wait();
-    
-            let data = {
-              token: 'YMIR',
-              hash: txHash.hash,
-              account_id: user.account_id
-            }
-    
-            if (confirmation.status === 1) {
-              data.amount = parseFloat(deposit);
-              data.message = `You attempted to deposit ${deposit} Ymir Coins from your Metamask Wallet.`;
-            } else {
-              data.amount = deposit;
-              data.message = `Your deposit attempt from Metamask Wallet has failed.`;
-            }
-    
-            dispatch(updateTempBalance(data, user.account_id));
-            dispatch(setTverify(false));
-            setDeposit(0);
-            dispatch({ type: 'SET_LOADER', payload: false })
-            dispatch(openModal(true, `Deposit from Metamask. ${deposit} Ymir Coin was successfully deposited into your game account wallet.`));
+        let data = {
+          token: 'YMIR',
+          hash: txHash.hash,
+          account_id: user.account_id,
+          
+        }
 
-        //     SOCKET.emit('END_TRANSACTION', user.account_id);
-        //   } else {
-        //     dispatch({ type: 'SET_LOADER', payload: false })
-        //   }
-        // });
+        if (confirmation.status === 1) {
+          data.amount = parseFloat(deposit);
+          data.message = `You attempted to deposit ${deposit} Ymir Coins from your Metamask Wallet.`;
+        } else {
+          data.amount = deposit;
+          data.message = `Your deposit attempt from Metamask Wallet has failed.`;
+        }
+
+        dispatch(updateTempBalance(data, user.account_id));
+        dispatch(setTverify(false));
+        setDeposit(0);
+        dispatch({ type: 'SET_LOADER', payload: false })
+        dispatch(openModal(true, `Deposit from Metamask. ${deposit} Ymir Coin was successfully deposited into your game account wallet.`));
       } catch (err) {
         handleDepositClose()
         dispatch({ type: 'SET_LOADER', payload: false });
@@ -231,7 +222,13 @@ function YMIRTransaction() {
   const DepositFund = async () => {
     if (window.confirm("You are trying to claim " + fundBalance + " Ymir Coin. Click confirm to proceed.")) {
       try {
-        let fundDepositBalance = await dispatch(getAccountBalance(user.account_id));
+        let fundDepositBalance = await dispatch(getAccountBalance(user.account_id, history));
+        if (fundDepositBalance === null) {
+          if (timer) {
+            clearInterval(timer);
+            return;
+          }
+        }
         if (fundDepositBalance <= 0 ) {
           toast.warn('Please Token Balance again.');
           return;
@@ -259,7 +256,7 @@ function YMIRTransaction() {
 		      data.hash = txHash.transactionHash;
           data.message = `You attempted to claim ${fundDepositBalance} Ymir Coins from your Game Account Wallet.`;
           dispatch(updateTempBalance(data, user.account_id));
-          dispatch(getAccountBalance(user.account_id));
+          dispatch(getAccountBalance(user.account_id, history));
           dispatch({ type: 'SET_LOADER', payload: false });
           dispatch(openModal(true, `Claim Ymir Coins. ${fundDepositBalance} Ymir Coin was successfully claimed from your game account wallet.`));
         } else {
@@ -499,7 +496,7 @@ function YMIRTransaction() {
                 <VerifyButton
                   disabled={flag}
                   onClick={() => {
-                    dispatch(resend());
+                    dispatch(resend(history));
                     setFlag(true);
                   }}
                 >
@@ -507,7 +504,7 @@ function YMIRTransaction() {
                 </VerifyButton>
               </VerifyTextfieldWrap>
               <Typography variant="p" color='#aaa'>
-                Enter the 6-digit code sent to  {user.email.split('@')[0].slice(0, 4)}***@{user.email.split('@')[1]}
+                Enter the 6-digit code sent to  {user?.email.split('@')[0].slice(0, 4)}***@{user?.email.split('@')[1]}
               </Typography>
             </Grid>
             <Stack alignItems={{ xs: 'center', width: '100%' }} direction='row' justifyContent='space-around'>

@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const auth = require('../../middleware/auth');
 
 const UserData = require('../../models/UserData');
 
-router.get('/:account_id', async (req, res) => {
+router.get('/:account_id', auth, async (req, res) => {
     const { account_id } = req.params;
 
     try {

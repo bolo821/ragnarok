@@ -1,6 +1,7 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -63,6 +64,7 @@ const SearchBox = styled(TextField)(({ theme }) => ({
 }));
 
 function Balances() {
+    const history = useHistory();
     const dispatch = useDispatch();
     const balances = useSelector(state => state.balance);
     const users = useSelector(state => state.user.userlist);
@@ -86,10 +88,10 @@ function Balances() {
 
     useEffect(() => {
         dispatch(getUsers());
-        dispatch(getTokenBalances('YMIR'));
-        dispatch(getTokenBalances('ROK'));
-        dispatch(getTokenFunds('YMIR'));
-        dispatch(getTokenFunds('ROK'));
+        dispatch(getTokenBalances('YMIR', history));
+        dispatch(getTokenBalances('ROK', history));
+        dispatch(getTokenFunds('YMIR', history));
+        dispatch(getTokenFunds('ROK', history));
     }, [ dispatch ]);
 
     useEffect(() => {

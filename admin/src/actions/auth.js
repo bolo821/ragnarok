@@ -76,12 +76,6 @@ export const login = (email, password, history) => async dispatch => {
 // Auto login user with token stored in local storage. (New Bolo)
 export const autoLogin = (token, history) => async dispatch => {
   try {
-    const de_exp = jwt_decode(token);
-    
-    if (de_exp.exp < Date.now() / 1000) {
-      dispatch(logout);
-      return;
-    }
     const res = await api.get('/auth/auto_login/1', { headers: {
       'x-auth-token': token,
     }});
@@ -110,6 +104,11 @@ export const autoLogin = (token, history) => async dispatch => {
       });
     }
   } catch (err) {
+    if (err.response.status === 405) {
+      const de_exp = jwt_decode(token);
+      SOCKET.emit('FORCE_LOGOUT', de_exp.user.account_id)
+      return;
+    }
     console.log('error: ', err);
     setAuthToken(null);
     history.push('/');
@@ -117,7 +116,7 @@ export const autoLogin = (token, history) => async dispatch => {
 }
 
 // Send verification code (Bolo)
-export const resend = () => async dispatch => {
+export const resend = () => async (dispatch, getState) => {
   try {
     const res = await api.get('/auth/resendcode');
 
@@ -125,6 +124,12 @@ export const resend = () => async dispatch => {
       toast.success('Verification code is sent successfully. Please check your email.');
     }
   } catch (err) {
+    if (err.response.status === 405) {
+      const accoutn_id = getState().auth.user.account_id;
+      SOCKET.emit('FORCE_LOGOUT', accoutn_id)
+      return;
+    }
+
     let errors;
     if (err.response) {
       if (err.response.data)
@@ -168,6 +173,12 @@ export const emailverify = (code, history) => async (dispatch, getState) => {
       });
     }
   } catch (err) {
+    if (err.response.status === 405) {
+      const accoutn_id = getState().auth.user.account_id;
+      SOCKET.emit('FORCE_LOGOUT', accoutn_id)
+      return;
+    }
+
     const errors = err.response.data.errors;
     if (errors) {
       errors.forEach(error => toast.error(error.msg));
@@ -176,13 +187,19 @@ export const emailverify = (code, history) => async (dispatch, getState) => {
 };
 
 // Change Password
-export const changePassword = (data, history) => async dispatch => {
+export const changePassword = (data) => async (dispatch, getState) => {
   try {
     const res = await api.post('/auth/changePassword', data);
     if (res && res.data && res.data.success) {
       toast.success('Succefully changed.');
     }
   } catch (err) {
+    if (err.response.status === 405) {
+      const accoutn_id = getState().auth.user.account_id;
+      SOCKET.emit('FORCE_LOGOUT', accoutn_id)
+      return;
+    }
+
     let errors;
     if (err.response) {
       if (err.response.data)
@@ -196,7 +213,7 @@ export const changePassword = (data, history) => async dispatch => {
 }
 
 // Transaction Verify (Bolo)
-export const transactionverify = (code, callback) => async dispatch => {
+export const transactionverify = (code, callback) => async (dispatch, getState) => {
   try {
     dispatch({
       type: SET_VLOAD,
@@ -212,6 +229,12 @@ export const transactionverify = (code, callback) => async dispatch => {
       toast.warn('Verify Code was not matched. Please confirm again.');
     }
   } catch (err) {
+    if (err.response.status === 405) {
+      const accoutn_id = getState().auth.user.account_id;
+      SOCKET.emit('FORCE_LOGOUT', accoutn_id)
+      return;
+    }
+
     const errors = err.response.data.errors;
     if (errors) {
       errors.forEach(error => toast.error(error.msg));
@@ -228,7 +251,7 @@ export const setTverify = (value) => async dispatch => {
 }
 
 // Transaction Verify (Bolo)
-export const transactionverifyROK = (code, callback) => async dispatch => {
+export const transactionverifyROK = (code, callback) => async (dispatch, getState) => {
   try {
     dispatch({
       type: SET_VLOAD,
@@ -244,6 +267,12 @@ export const transactionverifyROK = (code, callback) => async dispatch => {
       toast.warn('Verify Code was not matched. Please confirm again.');
     }
   } catch (err) {
+    if (err.response.status === 405) {
+      const accoutn_id = getState().auth.user.account_id;
+      SOCKET.emit('FORCE_LOGOUT', accoutn_id)
+      return;
+    }
+
     const errors = err.response.data.errors;
     if (errors) {
       errors.forEach(error => toast.error(error.msg));
@@ -259,7 +288,7 @@ export const setTverifyROK = (value) => async dispatch => {
 }
 
 // Register Sub User
-export const registerSubaccount = formData => async dispatch => {
+export const registerSubaccount = formData => async (dispatch, getState) => {
   try {
     const res = await api.post('/users/subaccount', formData);
     dispatch({
@@ -268,6 +297,12 @@ export const registerSubaccount = formData => async dispatch => {
     });
     toast.success('Register Subaccount succefully.');
   } catch (err) {
+    if (err.response.status === 405) {
+      const accoutn_id = getState().auth.user.account_id;
+      SOCKET.emit('FORCE_LOGOUT', accoutn_id)
+      return;
+    }
+
     const errors = err.response.data.errors;
 
     if (errors) {
@@ -281,7 +316,7 @@ export const registerSubaccount = formData => async dispatch => {
 };
 
 // Get sub users
-export const getSubaccounts = () => async dispatch => {
+export const getSubaccounts = () => async (dispatch, getState) => {
   try {
     const res = await api.get('/users/subaccount');
 
@@ -290,6 +325,12 @@ export const getSubaccounts = () => async dispatch => {
       payload: res.data
     });
   } catch (err) {
+    if (err.response.status === 405) {
+      const accoutn_id = getState().auth.user.account_id;
+      SOCKET.emit('FORCE_LOGOUT', accoutn_id)
+      return;
+    }
+
     let errors
     if (err.response)
       if (err.response.data)
@@ -306,24 +347,14 @@ export const getSubaccounts = () => async dispatch => {
 };
 
 // Logout (Bolo)
-export const logout = (history) => async dispatch => {
-  try {
-    setAuthToken(null);
-    dispatch({ type: LOGOUT });
-    SOCKET.emit('DISCONNECT');
+export const logout = (history) => dispatch => {
+  setAuthToken(null);
+  dispatch({ type: LOGOUT });
+  SOCKET.emit('DISCONNECT');
+  if (history) {
     history.push('/login');
-
-  } catch (err) {
-    let errors;
-
-    if (err.response)
-      if (err.response.data)
-        errors = err.response.data.errors;
-
-    if (errors) {
-      errors.forEach(error => toast.error(error.msg));
-    }
-    history.push('/login');
+  } else {
+    window.location.href = '/login';
   }
 };
 
@@ -398,11 +429,17 @@ export const changeEmail = (email, history) => async dispatch => {
   }
 }
 
-export const forgotpassword = (searchkey) => async dispatch => {
+export const forgotpassword = (searchkey) => async (dispatch, getState) => {
   try {
     await api.post('/auth/forgotpassword', searchkey);
     toast.success('You will receive new password on your email.');
   } catch (err) {
+    if (err.response.status === 405) {
+      const accoutn_id = getState().auth.user.account_id;
+      SOCKET.emit('FORCE_LOGOUT', accoutn_id)
+      return;
+    }
+
     let errors;
     if (err.response) {
       if (err.response.data)

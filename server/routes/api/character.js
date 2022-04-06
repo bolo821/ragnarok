@@ -1,7 +1,8 @@
 const router = require('express').Router();
 const Character = require('../../models/Character');
+const auth = require('../../middleware/auth');
 
-router.post('/', (req, res) => {
+router.post('/', auth, (req, res) => {
     const { account_id } = req.body;
 
     Character.findById(account_id, (err, data) => {

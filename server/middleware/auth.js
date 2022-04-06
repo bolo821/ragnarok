@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const config = require('config');
 const User = require('../models/User');
-const { decode } = require('jsonwebtoken');
 
 module.exports = function (req, res, next) {
   // Get token from header
@@ -15,22 +14,19 @@ module.exports = function (req, res, next) {
   // Verify token
   try {
     jwt.verify(token, config.get('jwtSecret'), (error, decoded) => {
-      if (error) {
-        return res.status(401).json({ msg: 'Token is not valid' });
+      if (error || !decoded) {
+        return res.status(405).json({ msg: 'Token is not valid' });
       } else {
-        try {
-          User.findOne({ account_id: decoded.user.account_id }, async (err, user) => {
-            if (!user) {
-              return res.status(401).json({ msg: 'User not exist' });
-            } else {
-              req.user = decoded.user;
-              next();
-            }
-          });
-        } catch (err) {
-            console.log('error: ', err);
-            return res.status(500).json({ msg: 'Server Error' });
-        }
+        User.findOne({ account_id: decoded.user.account_id }, async (err, user) => {
+          if (err) {
+            return res.status(405).json({ msg: 'Error in finding user' });
+          } else if (!user) {
+            return res.status(401).json({ msg: 'User not exist' });
+          } else {
+            req.user = decoded.user;
+            next();
+          }
+        });
       }
     });
   } catch (err) {

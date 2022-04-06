@@ -1,6 +1,7 @@
 const multer = require('multer');
 const router = require('express').Router();
 const News = require('../../models/News');
+const auth = require('../../middleware/auth');
 const SERVER_URL = `${process.env.APP_URL}/news/`
 
 const upload = multer({
@@ -25,7 +26,7 @@ const upload = multer({
     }
 });
 
-router.post('/add', upload.single('image'), (req, res) => {
+router.post('/add', auth, upload.single('image'), (req, res) => {
     const { link } = req.body;
     const { filename } = req.file;
 
@@ -59,7 +60,7 @@ router.get('/', (req, res) => {
     });
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', auth, (req, res) => {
     const { id } = req.params;
     News.deleteById(id, (err, data) => {
         if (err) {

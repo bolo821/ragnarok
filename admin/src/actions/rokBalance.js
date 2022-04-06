@@ -7,6 +7,7 @@ import {
   GET_ROK_CONTRACT_BALANCE,
   GET_ROK_FUND_BALANCE
 } from './types';
+import { SOCKET } from '../utils/api';
 
 export const get_balances = () => async dispatch => {
   // try {
@@ -23,7 +24,7 @@ export const get_balances = () => async dispatch => {
 };
 
 // Get Balance of Current User Wallet
-export const getWalletBalance = (rokContract, account) => async dispatch => {
+export const getWalletBalance = (rokContract, account) => async (dispatch) => {
   try {
     const res = await rokContract.balanceOf(account);
     let amount = getBalanceAmount(res);
@@ -38,7 +39,7 @@ export const getWalletBalance = (rokContract, account) => async dispatch => {
 };
 
 // Get Balance of current user
-export const getContractBalance = (rokContract, account) => async dispatch => {
+export const getContractBalance = (rokContract, account) => async (dispatch) => {
   try {
 
     const res = await rokContract._walletBalance(account);
@@ -58,7 +59,7 @@ export const getContractBalance = (rokContract, account) => async dispatch => {
 };
 
 
-export const getAccountBalance = (account_id) => async dispatch => {
+export const getAccountBalance = (account_id) => async (dispatch, getState) => {
   try {
     const res = await api.get('/balance/' + account_id + '/ROK');
     // const res = await rokContract.balanceOf(account);
@@ -69,6 +70,11 @@ export const getAccountBalance = (account_id) => async dispatch => {
     });
     return res.data.value;
   } catch (err) {
+    if (err.response.status === 405) {
+      const accoutn_id = getState().auth.user.account_id;
+      SOCKET.emit('FORCE_LOGOUT', accoutn_id)
+      return;
+    }
     console.log(err)
     return 0;
   }
@@ -88,7 +94,7 @@ export const getAccountBalance = (account_id) => async dispatch => {
 //   }
 // }
 
-export const getFundBalance = (account_id) => async dispatch => {
+export const getFundBalance = (account_id) => async (dispatch, getState) => {
   try {
     const res = await api.get('/fund/' + account_id + '/ROK');
     // const res = await rokContract.balanceOf(account);
@@ -99,16 +105,26 @@ export const getFundBalance = (account_id) => async dispatch => {
     });
     return res.data.value;
   } catch (err) {
+    if (err.response.status === 405) {
+      const accoutn_id = getState().auth.user.account_id;
+      SOCKET.emit('FORCE_LOGOUT', accoutn_id)
+      return;
+    }
     console.log(err)
     return 0;
   }
 };
 
-export const updateFunndBalance = (data, account_id) => async dispatch => {
+export const updateFunndBalance = (data, account_id) => async (dispatch, getState) => {
   try {
     const res = await api.post('/fund/updatebalance', data);
     return res.data;
   } catch (err) {
+    if (err.response.status === 405) {
+      const accoutn_id = getState().auth.user.account_id;
+      SOCKET.emit('FORCE_LOGOUT', accoutn_id)
+      return;
+    }
     console.log(err);
     const errors = err.response.data.errors;
 
@@ -119,7 +135,7 @@ export const updateFunndBalance = (data, account_id) => async dispatch => {
 }
 
 // Update FundTemp Balance
-export const updateFundTempBalance = (data, account_id) => async dispatch => {
+export const updateFundTempBalance = (data, account_id) => async (dispatch, getState) => {
   try {
     await api.post('/fund/updatetempbalance', data);
 
@@ -128,6 +144,11 @@ export const updateFundTempBalance = (data, account_id) => async dispatch => {
     dispatch(getLogs(account_id));
 
   } catch (err) {
+    if (err.response.status === 405) {
+      const accoutn_id = getState().auth.user.account_id;
+      SOCKET.emit('FORCE_LOGOUT', accoutn_id)
+      return;
+    }
     const errors = err.response.data.errors;
 
     if (errors) {
@@ -137,13 +158,18 @@ export const updateFundTempBalance = (data, account_id) => async dispatch => {
 };
 
 // Update Temp Balance
-export const updateTempBalance = (data, account_id) => async dispatch => {
+export const updateTempBalance = (data, account_id) => async (dispatch, getState) => {
   try {
     await api.post('/balance/updatetempbalance', data);
     dispatch(getContractBalance(account_id));
     dispatch(getLogs(account_id));
 
   } catch (err) {
+    if (err.response.status === 405) {
+      const accoutn_id = getState().auth.user.account_id;
+      SOCKET.emit('FORCE_LOGOUT', accoutn_id)
+      return;
+    }
     const errors = err.response.data.errors;
 
     if (errors) {
@@ -153,12 +179,17 @@ export const updateTempBalance = (data, account_id) => async dispatch => {
 };
 
 // Update Temp Balance
-export const updateContractBalance = (data, account_id) => async dispatch => {
+export const updateContractBalance = (data, account_id) => async (dispatch, getState) => {
   try {
     const res = await api.post('/balance/updatebalance', data);
     dispatch(getLogs(account_id));
     return res.data;
   } catch (err) {
+    if (err.response.status === 405) {
+      const accoutn_id = getState().auth.user.account_id;
+      SOCKET.emit('FORCE_LOGOUT', accoutn_id)
+      return;
+    }
     return false
   }
 };
