@@ -244,6 +244,9 @@ function Transactions() {
                                     marginTop: '20px',
                                     '& button': {
                                       color: 'white'
+                                    },
+                                    '& li div': {
+                                        color: 'white'
                                     }
                                 }}
                             />
