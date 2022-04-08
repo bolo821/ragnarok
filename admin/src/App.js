@@ -21,7 +21,7 @@ function App() {
   return (
     <LoadingOverlay active={isLoading} spinner text='Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.'>
       <ToastContainer pauseOnFocusLoss={false} autoClose={5000} hideProgressBar={false} closeOnClick />
-      <Router basename='/admin-OiJIUzI1NiIsI/'>
+      <Router basename='/admin-OiJIUzI1NiIsI'>
         <Alert />
         <SuccessModal />
         <Header />

@@ -20,7 +20,7 @@ import { useWeb3React } from '@web3-react/core';
 import { AuthButton, AdminTextField, VerifyTextfieldWrap, VerifyTextfield, VerifyButton, formstyle } from '../../../components/adminlayout/LayoutItem';
 import CountDown from '../../../components/CountDown';
 import { getDecimalAmount } from '../../../utils/formatBalance';
-import { verifyNumberByDecimal } from '../../../utils/helper';
+import { verifyNumberByDecimal, checkTokenExpiration } from '../../../utils/helper';
 import { toast } from 'react-toastify';
 
 const DepositButton = styled(Button)(({ theme }) => ({
@@ -119,14 +119,21 @@ function YMIRTransaction() {
           setDeposit(0);
           return;
         }
+
         if (parseFloat(deposit) > parseFloat(walletBalance)) {
           toast.warn('The current token amount is exceeding your balance.');
           setDeposit(0);
           return;
         }
+
         if (!verifyNumberByDecimal(deposit, 18)) {
           toast.warn('The number is exceeding the decimal.');
           setDeposit(0);
+          return;
+        }
+        
+        if (!checkTokenExpiration()) {
+          toast.warn('Your token will be expired in 1 minute and we stopped your transaction to prevent your token loss. You can try after login again.');
           return;
         }
 
@@ -179,6 +186,11 @@ function YMIRTransaction() {
         if (!verifyNumberByDecimal(widthraw, 18)) {
           toast.warn('The number is exceeding the decimal.');
           setWidthraw(0);
+          return;
+        }
+
+        if (!checkTokenExpiration()) {
+          toast.warn('Your token will be expired in 1 minute and we stopped your transaction to prevent your token loss. You can try after login again.');
           return;
         }
 
@@ -239,6 +251,11 @@ function YMIRTransaction() {
           return;
         }
 
+        if (!checkTokenExpiration()) {
+          toast.warn('Your token will be expired in 1 minute and we stopped your transaction to prevent your token loss. You can try after login again.');
+          return;
+        }
+
         toast.warn('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.');
         handleDepositFundClose()
         dispatch({ type: 'SET_LOADER', payload: true })
@@ -284,6 +301,11 @@ function YMIRTransaction() {
         if (!verifyNumberByDecimal(withdrawFund, 18)) {
           toast.warn('The number is exceeding the decimal.');
           setWithdrawFund(0);
+          return;
+        }
+
+        if (!checkTokenExpiration()) {
+          toast.warn('Your token will be expired in 1 minute and we stopped your transaction to prevent your token loss. You can try after login again.');
           return;
         }
 

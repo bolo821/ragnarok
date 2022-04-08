@@ -110,7 +110,7 @@ function Sidebar() {
             <ListItem component="div" sx={{borderBottom: '1px solid #F5F6F9'}} >
               <Stack alignItems='center'>
                 <Stack direction='row' alignItems='center' justifyContent='center' sx={{pt: 2}}>
-                  <img src="/logo.png" width="70%" alt="logo" />
+                  <img src={`${process.env.PUBLIC_URL}/logo.png`} width="70%" alt="logo" />
                 </Stack>
                 <Stack direction='row' alignItems='center' sx={{mt: 2}}>
                   <AdminListItemText

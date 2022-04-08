@@ -116,7 +116,7 @@ function Register() {
                       </span>
                     ) : (
                       <LoginButton onClick={connect}>
-                        <img src='/wallets/metamask.svg' alt="metamask logo" /> Connect Metamask
+                        <img src={`${process.env.PUBLIC_URL}/wallets/metamask.svg`} alt="metamask logo" /> Connect Metamask
                       </LoginButton>
                     )}
                   </Stack>

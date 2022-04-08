@@ -42,9 +42,9 @@ const ImageBackWrap = styled(Stack)(({ theme }) => ({
   border: '4px solid #985e03'
 }));
 
-const Image = styled(Box)(({ theme }) => ({
+const Image = styled('img')(({ theme }) => ({
   height: '100%',
-  width: 'fit-content',
+  width: 'auto',
   marginTop: '-25px'
 }));
 
@@ -55,7 +55,7 @@ export default function NftCard({src, title}) {
       </ImageBackWrap>
       <ImageWrap alignItems='center'>
         <Image
-          component="img"
+          alt="img"
           src={src}
         />
       </ImageWrap>

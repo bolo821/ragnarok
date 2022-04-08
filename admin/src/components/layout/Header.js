@@ -86,7 +86,7 @@ const Header = ({logout, isAuthenticated}) => {
             <Box>
               <LogoBox
                 component="img"
-                src="/logo.png"
+                src={`${process.env.PUBLIC_URL}/logo.png`}
               />
             </Box>
 

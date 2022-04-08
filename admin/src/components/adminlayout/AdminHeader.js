@@ -118,7 +118,7 @@ const AdminHeader = ({logout, isAuthenticated}) => {
             <Box>
               <Box
                 component="img"
-                src="/logo.png"
+                src={`${process.env.PUBLIC_URL}/logo.png`}
                 sx={{ mr: 2, py: 1, height: '150px', mt: 10 }}
               />
             </Box>

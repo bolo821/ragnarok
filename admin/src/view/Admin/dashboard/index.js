@@ -94,7 +94,7 @@ function UserDashabord() {
                 >
                   <Box
                     component='img'
-                    src='/userpanel/item1.png'
+                    src={`${process.env.PUBLIC_URL}/userpanel/item1.png`}
                   />
                   <Box>
                     <Typography component='h5' variant='h5' align='center'>{characters.length}</Typography>
@@ -117,7 +117,7 @@ function UserDashabord() {
                 >
                   <Box
                     component='img'
-                    src='/userpanel/item2.png'
+                    src={`${process.env.PUBLIC_URL}/userpanel/item2.png`}
                   />
                   <Box>
                     <Typography component='h5' variant='h5' align='center'>{equipment}</Typography>
@@ -140,7 +140,7 @@ function UserDashabord() {
                 >
                   <Box
                     component='img'
-                    src='/userpanel/item3.png'
+                    src={`${process.env.PUBLIC_URL}/userpanel/item3.png`}
                   />
                   <Box>
                     <Typography component='h5' variant='h5' align='center'>{costume}</Typography>
@@ -163,7 +163,7 @@ function UserDashabord() {
                 >
                   <Box
                     component='img'
-                    src='/userpanel/item4.png'
+                    src={`${process.env.PUBLIC_URL}/userpanel/item4.png`}
                   />
                   <Box>
                     <Typography component='h5' variant='h5' align='center'>{card}</Typography>
@@ -185,7 +185,7 @@ function UserDashabord() {
                 >
                   <Box
                     component='img'
-                    src='/userpanel/coin.png'
+                    src={`${process.env.PUBLIC_URL}/userpanel/coin.png`}
                   />
                   <Box>
                     <Typography component='h5' variant='h5' align='center'>{numberWithCommas(zeny)}</Typography>

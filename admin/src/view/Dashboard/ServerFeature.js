@@ -30,7 +30,7 @@ export default function ServerFeature() {
             <Stack alignItems='center'>
               <Box
                 component='img'
-                src='/server/servercharacter1.png'
+                src={`${process.env.PUBLIC_URL}/server/servercharacter1.png`}
                 sx={{height: '250px'}}
               />
               <Typography variant='h5' component='h5' color='white' fontWeight={600}>
@@ -43,7 +43,7 @@ export default function ServerFeature() {
             <Stack alignItems='center'>
               <Box
                 component='img'
-                src='/server/servercharacter2.png'
+                src={`${process.env.PUBLIC_URL}/server/servercharacter2.png`}
                 sx={{height: '250px'}}
               />
               <Typography variant='h5' component='h5' color='white' fontWeight={600}>
@@ -56,7 +56,7 @@ export default function ServerFeature() {
             <Stack alignItems='center'>
               <Box
                 component='img'
-                src='/server/servercharacter3.png'
+                src={`${process.env.PUBLIC_URL}/server/servercharacter3.png`}
                 sx={{height: '250px'}}
               />
               <Typography variant='h5' component='h5' color='white' fontWeight={600}>
@@ -69,7 +69,7 @@ export default function ServerFeature() {
             <Stack alignItems='center'>
               <Box
                 component='img'
-                src='/server/servercharacter4.png'
+                src={`${process.env.PUBLIC_URL}/server/servercharacter4.png`}
                 sx={{height: '250px'}}
               />
               <Typography variant='h5' component='h5' color='white' fontWeight={600}>

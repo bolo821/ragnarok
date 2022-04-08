@@ -36,17 +36,17 @@ export default function Jobs() {
             FIRST JOBS
           </JobTitle>
           <Grid container>
-            <NftCard src="/images/1st_Job/SWORDMAN.png" title='SWORDMAN' />
+            <NftCard src={`${process.env.PUBLIC_URL}/images/1st_Job/SWORDMAN.png`} title='SWORDMAN' />
           
-            <NftCard src="/images/1st_Job/ACOLYTE.png" title='ACOLYTE' />
+            <NftCard src={`${process.env.PUBLIC_URL}/images/1st_Job/ACOLYTE.png`} title='ACOLYTE' />
           
-            <NftCard src="/images/1st_Job/MAGICIAN.png" title='MAGICIAN' />
+            <NftCard src={`${process.env.PUBLIC_URL}/images/1st_Job/MAGICIAN.png`} title='MAGICIAN' />
           
-            <NftCard src="/images/1st_Job/MERCHANT.png" title='MERCHANT' />
+            <NftCard src={`${process.env.PUBLIC_URL}/images/1st_Job/MERCHANT.png`} title='MERCHANT' />
           
-            <NftCard src="/images/1st_Job/THIEF.png" title='THIEF' />
+            <NftCard src={`${process.env.PUBLIC_URL}/images/1st_Job/THIEF.png`} title='THIEF' />
           
-            <NftCard src="/images/1st_Job/ARCHWER.png" title='ARCHER' />
+            <NftCard src={`${process.env.PUBLIC_URL}/images/1st_Job/ARCHWER.png`} title='ARCHER' />
           </Grid>
         </Box>
         <Box sx={{maxWidth: '800px'}}>
@@ -54,17 +54,17 @@ export default function Jobs() {
             SECOND JOBS
           </JobTitle>
           <Grid container>
-            <NftCard src="/images/2st_Job/KNIGHT.png" title='KNIGHT' />
+            <NftCard src={`${process.env.PUBLIC_URL}/images/2st_Job/KNIGHT.png`} title='KNIGHT' />
           
-            <NftCard src="/images/2st_Job/PRIEST.png" title='PRIEST' />
+            <NftCard src={`${process.env.PUBLIC_URL}/images/2st_Job/PRIEST.png`} title='PRIEST' />
           
-            <NftCard src="/images/2st_Job/WIZARD.png" title='WIZARD' />
+            <NftCard src={`${process.env.PUBLIC_URL}/images/2st_Job/WIZARD.png`} title='WIZARD' />
           
-            <NftCard src="/images/2st_Job/BLACKSMITH.png" title='BLACKSMITH' />
+            <NftCard src={`${process.env.PUBLIC_URL}/images/2st_Job/BLACKSMITH.png`} title='BLACKSMITH' />
           
-            <NftCard src="/images/2st_Job/ASSASSIN.png" title='ASSASSIN' />
+            <NftCard src={`${process.env.PUBLIC_URL}/images/2st_Job/ASSASSIN.png`} title='ASSASSIN' />
           
-            <NftCard src="/images/2st_Job/HUNTER.png" title='HUNTER' />
+            <NftCard src={`${process.env.PUBLIC_URL}/images/2st_Job/HUNTER.png`} title='HUNTER' />
           </Grid>
         </Box>
       </Stack>

@@ -14,8 +14,6 @@ module.exports = function (req, res, next) {
   // Verify token
   try {
     jwt.verify(token, config.get('jwtSecret'), (error, decoded) => {
-      console.log('decoded: ', decoded);
-      console.log('current time: ', parseInt(Date.now() / 1000));
       if (error || !decoded) {
         return res.status(405).json({ msg: 'Token is not valid' });
       } else {

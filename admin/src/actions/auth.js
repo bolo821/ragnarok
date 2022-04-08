@@ -65,6 +65,7 @@ export const login = (email, password, history) => async dispatch => {
       }
     });
   } catch (err) {
+    window.grecaptcha.reset();
     console.log('error: ', err);
     const errors = err.response.data.errors;
     if (errors) {
