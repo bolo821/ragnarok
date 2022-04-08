@@ -82,6 +82,9 @@ function Activities() {
                 size='large'
                 sx={{
                   marginTop: '20px',
+                  '& button': {
+                    color: 'white'
+                  }
                 }}
               />
             </DashboardBody>

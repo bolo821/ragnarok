@@ -265,7 +265,7 @@ router.post('/verifyemail', auth, async (req, res) => {
             jwt.sign(
               { user: { ...req.user, verify: 1 }},
               config.get('jwtSecret'),
-              { expiresIn: '180s' },
+              { expiresIn: '3h' },
               (err, token) => {
                 if (err) throw err;
                 res.json({ token });
@@ -429,7 +429,7 @@ router.get('/wallet/:wallet', async (req, res) => {
             jwt.sign(
               payload,
               config.get('jwtSecret'),
-              { expiresIn: '1d' },
+              { expiresIn: '3h' },
               (err, token) => {
                 if (err) throw err;
                 res.json({ token });

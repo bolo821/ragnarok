@@ -241,7 +241,10 @@ function Transactions() {
                                 color='primary'
                                 size='large'
                                 sx={{
-                                    marginTop: '20px'
+                                    marginTop: '20px',
+                                    '& button': {
+                                      color: 'white'
+                                    }
                                 }}
                             />
                         </DashboardBody>
