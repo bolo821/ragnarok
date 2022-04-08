@@ -11,8 +11,8 @@ export const verifyNumberByDecimal = (num, decimal) => {
 export const checkTokenExpiration = () => {
     const currentTime = parseInt(Date.now() / 1000);
 
-    const iat = jwt_decode(localStorage.getItem('auth-token-rt')).iat;
-    if (currentTime > iat - 60) {
+    const exp = jwt_decode(localStorage.getItem('auth-token-rt')).exp;
+    if (currentTime > exp - 60) {
         return false;
     }
 
