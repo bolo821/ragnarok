@@ -1,0 +1,14 @@
+{
+  "name": "nft-marketplace",
+  "version": "1.0.0",
+  "description": "Token generator",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index"
+  },
+  "author": "Bolo.js",
+  "license": "MIT",
+  "dependencies": {
+    "jsonwebtoken": "^8.5.1"
+  }
+}
