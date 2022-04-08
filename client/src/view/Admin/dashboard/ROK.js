@@ -24,7 +24,7 @@ import { AuthButton, AdminTextField, VerifyTextfieldWrap, VerifyTextfield, Verif
 import CountDown from '../../../components/CountDown';
 import { getDecimalAmount } from '../../../utils/formatBalance';
 import { toast } from 'react-toastify';
-import { verifyNumberByDecimal } from '../../../utils/helper';
+import { verifyNumberByDecimal, checkTokenExpiration } from '../../../utils/helper';
 
 const DepositButton = styled(Button)(({ theme }) => ({
   height: '30px',

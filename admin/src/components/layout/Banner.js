@@ -12,7 +12,7 @@ const Banner = ({logout}) => {
     <Box sx={{mt: '110px', backgroundColor: '#1c4f9c'}}>
       <BannerWrap
         component='img'
-        src="/banner.png"
+        src={`${process.env.PUBLIC_URL}/banner.png`}
       >
       </BannerWrap>
     </Box>
