@@ -10,9 +10,9 @@ import { styled } from '@mui/material/styles';
 
 const DateTime = styled(Typography)(({ theme }) => ({
   marginRight: '16px',
-  width: '150px',
+  width: '200px',
   [theme.breakpoints.down('md')]: {
-    width: '100px',
+    width: '160px',
   },
 }));
 
