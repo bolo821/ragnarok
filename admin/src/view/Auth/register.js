@@ -95,6 +95,7 @@ function Register() {
       toast.warn('Please connect your wallet.');
     } else {
       dispatch(register({ userid: username, email, password, wallet: account }, history));
+      setRecaptcha(false);
     }
   };
 

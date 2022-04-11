@@ -84,8 +84,10 @@ function ROKTransaction() {
 
   const onVerify = async (e) => {
     e.preventDefault();
-    if (recaptcha)
+    if (recaptcha) {
       dispatch(transactionverifyROK(code, handleVerifyClose));
+      setRecaptcha(false);
+    }
   };
 
   const handleDepositOpen = () => {

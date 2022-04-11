@@ -32,6 +32,7 @@ function Login() {
     e.preventDefault();
     if (recaptcha) {
       dispatch(login(email, password, history));
+      setRecaptcha(false);
     }
   };
 

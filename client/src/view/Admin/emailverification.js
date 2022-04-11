@@ -57,8 +57,10 @@ function Emailverification() {
 
   const onVerify = async (e) => {
     e.preventDefault();
-    if (recaptcha)
+    if (recaptcha) {
       dispatch(emailverify(code, history));
+      setRecaptcha(false);
+    }
   };
 
   useEffect(() => {
