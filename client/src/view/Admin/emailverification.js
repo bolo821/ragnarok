@@ -13,6 +13,8 @@ import { useHistory } from "react-router-dom";
 import { emailverify, resend } from '../../actions/auth';
 import { AdminBody, AuthButton, formstyle } from '../../components/adminlayout/LayoutItem';
 import CountDown from '../../components/CountDown';
+import ReCAPTCHA from 'react-google-recaptcha'
+import { recaptcha as RECAPTCHA_KEY } from '../../config';
 
 const VerifyBody = styled(Stack)(({ theme }) => ({
   height: '100%'
@@ -51,10 +53,12 @@ function Emailverification() {
 
   const [code, setCode] = useState('');
   const [flag, setFlag] = useState(false);
+  const [ recaptcha, setRecaptcha ] = useState(!parseInt(process.env.REACT_APP_CAPCHA));
 
   const onVerify = async (e) => {
     e.preventDefault();
-    dispatch(emailverify(code, history));
+    if (recaptcha)
+      dispatch(emailverify(code, history));
   };
 
   useEffect(() => {
@@ -88,6 +92,10 @@ function Emailverification() {
                     Enter the 6-digit code sent to  {user?.email.split('@')[0].slice(0, 4)}***@{user?.email.split('@')[1] }
                   </Typography>
                 </Grid>
+                <ReCAPTCHA
+                  sitekey={RECAPTCHA_KEY}
+                  onChange={() => setRecaptcha(true)}
+                />
                 <Stack alignItems={{xs: 'center', width: '100%'}} direction='row' justifyContent='space-around'>
                   <AuthButton onClick={onVerify} sx={{mt: 2}} fullWidth>
                     Verify

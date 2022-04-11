@@ -22,6 +22,8 @@ import CountDown from '../../../components/CountDown';
 import { getDecimalAmount } from '../../../utils/formatBalance';
 import { verifyNumberByDecimal, checkTokenExpiration } from '../../../utils/helper';
 import { toast } from 'react-toastify';
+import ReCAPTCHA from 'react-google-recaptcha'
+import { recaptcha as RECAPTCHA_KEY } from '../../../config';
 
 const DepositButton = styled(Button)(({ theme }) => ({
   height: '30px',
@@ -65,6 +67,7 @@ function YMIRTransaction() {
   const [depositFundmodal, setDepositFundmodal] = useState(false);
   const [withdrawFundmodal, setWithdrawFundmodal] = useState(false);
   const [verifymodal, setVerifymodal] = useState(false);
+  const [ recaptcha, setRecaptcha ] = useState(!parseInt(process.env.REACT_APP_CAPCHA));
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -77,7 +80,8 @@ function YMIRTransaction() {
 
   const onVerify = async (e) => {
     e.preventDefault();
-    dispatch(transactionverify(code, handleVerifyClose));
+    if (recaptcha)
+      dispatch(transactionverify(code, handleVerifyClose));
   };
 
   const handleDepositOpen = () => {
@@ -131,7 +135,7 @@ function YMIRTransaction() {
           setDeposit(0);
           return;
         }
-        
+
         if (!checkTokenExpiration()) {
           toast.warn('Your token will be expired in 1 minute and we stopped your transaction to prevent your token loss. You can try after login again.');
           return;
@@ -529,6 +533,10 @@ function YMIRTransaction() {
                 Enter the 6-digit code sent to  {user?.email.split('@')[0].slice(0, 4)}***@{user?.email.split('@')[1]}
               </Typography>
             </Grid>
+            <ReCAPTCHA
+              sitekey={RECAPTCHA_KEY}
+              onChange={() => setRecaptcha(true)}
+            />
             <Stack alignItems={{ xs: 'center', width: '100%' }} direction='row' justifyContent='space-around'>
               <AuthButton onClick={onVerify} sx={{ mt: 2 }} fullWidth>
                 Verify

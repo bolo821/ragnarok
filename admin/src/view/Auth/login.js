@@ -76,7 +76,7 @@ function Login() {
                   />
                   <ReCAPTCHA
                     sitekey={RECAPTCHA_KEY}
-                    onChange={() => setRecaptcha(true)}
+                    onChange={e => setRecaptcha(true)}
                   />
 
                   <Stack alignItems="center" direction="row" justifyContent="space-around" sx={{ width: "100%", mt: 2 }}>

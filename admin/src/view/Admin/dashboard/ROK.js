@@ -25,6 +25,8 @@ import CountDown from '../../../components/CountDown';
 import { getDecimalAmount } from '../../../utils/formatBalance';
 import { toast } from 'react-toastify';
 import { verifyNumberByDecimal, checkTokenExpiration } from '../../../utils/helper';
+import ReCAPTCHA from 'react-google-recaptcha'
+import { recaptcha as RECAPTCHA_KEY } from '../../../config';
 
 const DepositButton = styled(Button)(({ theme }) => ({
   height: '30px',
@@ -69,7 +71,7 @@ function ROKTransaction() {
   const [depositFundmodal, setDepositFundmodal] = useState(false);
   const [withdrawFundmodal, setWithdrawFundmodal] = useState(false);
   const [verifymodal, setVerifymodal] = useState(false);
-
+  const [ recaptcha, setRecaptcha ] = useState(!parseInt(process.env.REACT_APP_CAPCHA));
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -82,7 +84,8 @@ function ROKTransaction() {
 
   const onVerify = async (e) => {
     e.preventDefault();
-    dispatch(transactionverifyROK(code, handleVerifyClose));
+    if (recaptcha)
+      dispatch(transactionverifyROK(code, handleVerifyClose));
   };
 
   const handleDepositOpen = () => {
@@ -526,6 +529,10 @@ function ROKTransaction() {
                 Enter the 6-digit code sent to  {user?.email.split('@')[0].slice(0, 4)}***@{user?.email.split('@')[1]}
               </Typography>
             </Grid>
+            <ReCAPTCHA
+              sitekey={RECAPTCHA_KEY}
+              onChange={() => setRecaptcha(true)}
+            />
             <Stack alignItems={{ xs: 'center', width: '100%' }} direction='row' justifyContent='space-around'>
               <AuthButton onClick={onVerify} sx={{ mt: 2 }} fullWidth>
                 Verify

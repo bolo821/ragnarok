@@ -333,73 +333,79 @@ router.post('/forgotpassword', async (req, res) => {
   var searchkey = req.body;
 
   User.findOne(searchkey, async (err, user) => {
-    User.findOne({account_id: user.master}, async (err, master) => {
-      let newpass = (Math.floor(Math.random()*900000)+100000).toString();
-      var hash = crypto.createHash('md5').update(newpass).digest('hex');
-
-      User.update({user_pass: hash}, user.account_id, (err, data) => {
-        if (err)
-          return res.status(500).json({
-            errors: [{ msg: "Change failed. Try again." }]
-          });
-
-        getMailServer((transporter, server) => {
-          if (transporter) {
-            var emailContentToClient = {
-              from: server.username,
-              to: user.email ? user.email : master.email,
-              subject: 'New password',
-              html: `
-              <html>
-                <body>
-                  <div class="container" style="text-align: center;">
-                    <div class="row" style="margin: 20px 0px;">
-                      <div class="col-md-12">
-                        <div class="text-center">
-                          ${user.email ? user.email : master.email}
-                          Thank you. This is new Password for ${user.userid}
-                          ${newpass}
+    if (user) {
+      User.findOne({account_id: user.master}, async (err, master) => {
+        let newpass = (Math.floor(Math.random()*900000)+100000).toString();
+        var hash = crypto.createHash('md5').update(newpass).digest('hex');
+  
+        User.update({user_pass: hash}, user.account_id, (err, data) => {
+          if (err)
+            return res.status(500).json({
+              errors: [{ msg: "Change failed. Try again." }]
+            });
+  
+          getMailServer((transporter, server) => {
+            if (transporter) {
+              var emailContentToClient = {
+                from: server.username,
+                to: user.email ? user.email : master.email,
+                subject: 'New password',
+                html: `
+                <html>
+                  <body>
+                    <div class="container" style="text-align: center;">
+                      <div class="row" style="margin: 20px 0px;">
+                        <div class="col-md-12">
+                          <div class="text-center">
+                            ${user.email ? user.email : master.email}
+                            Thank you. This is new Password for ${user.userid}
+                            ${newpass}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </body>
-              </html>`
-            }
-  
-            transporter.sendMail(emailContentToClient, function (error, body) {
-              if (body) {
-                var today = new Date();
-                var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-                var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-      
-                Logs.create({
-                  account_id: master.account_id,
-                  message: `Forgot password for subuser ${user.userid}.`,
-                  amount: 1,
-                  type : 'FORGOT_PASSWORD_SUBUSER',
-                  date: date + ' ' + time,
-                  hash: null,
-                }, async (err, newlog) => {
-                  return res.json({
-                    success: true,
-                  });
-                });
-              } else {
-                console.log('error: ', error);
-                return res.status(500).json({
-                  errors: [{ msg: "Something was wrong. Try again." }]
-                });
+                  </body>
+                </html>`
               }
-            });
-          } else {
-            res.status(500).json({
-              errors: [{ msg: "Mail server error." }],
-            })
-          }
-        });
-      })
-    })
+    
+              transporter.sendMail(emailContentToClient, function (error, body) {
+                if (body) {
+                  var today = new Date();
+                  var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+                  var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        
+                  Logs.create({
+                    account_id: master.account_id,
+                    message: `Forgot password for subuser ${user.userid}.`,
+                    amount: 1,
+                    type : 'FORGOT_PASSWORD_SUBUSER',
+                    date: date + ' ' + time,
+                    hash: null,
+                  }, async (err, newlog) => {
+                    return res.json({
+                      success: true,
+                    });
+                  });
+                } else {
+                  console.log('error: ', error);
+                  return res.status(500).json({
+                    errors: [{ msg: "Something was wrong. Try again." }]
+                  });
+                }
+              });
+            } else {
+              res.status(500).json({
+                errors: [{ msg: "Mail server error." }],
+              })
+            }
+          });
+        })
+      });
+    } else {
+      return res.status(401).json({
+        errors: [{ msg: "There is no such user with the current email." }],
+      });
+    }
   })
 });
 

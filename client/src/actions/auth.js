@@ -107,7 +107,9 @@ export const autoLogin = (token, history) => async dispatch => {
   } catch (err) {
     if (err.response.status === 405) {
       const de_exp = jwt_decode(token);
-      SOCKET.emit('FORCE_LOGOUT', de_exp.user.account_id)
+      SOCKET.emit('FORCE_LOGOUT', de_exp.user.account_id);
+      setAuthToken(null);
+      history.push('/');
       return;
     }
     console.log('error: ', err);
@@ -180,6 +182,7 @@ export const emailverify = (code, history) => async (dispatch, getState) => {
       return;
     }
 
+    window.grecaptcha.reset();
     const errors = err.response.data.errors;
     if (errors) {
       errors.forEach(error => toast.error(error.msg));
@@ -236,6 +239,7 @@ export const transactionverify = (code, callback) => async (dispatch, getState) 
       return;
     }
 
+    window.grecaptcha.reset();
     const errors = err.response.data.errors;
     if (errors) {
       errors.forEach(error => toast.error(error.msg));
@@ -358,77 +362,6 @@ export const logout = (history) => dispatch => {
     window.location.href = '/login';
   }
 };
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-export const walletuser = (wallet, history) => async dispatch => {
-  try {
-    const res = await api.get('/auth/wallet/' + wallet);
-
-    if (res.data) {
-      if (res.data.session === 1) {
-        toast.error('Someone have already logined in this account.');
-        history.push('/');
-      } else {
-        dispatch({
-          type: LOGIN_SUCCESS,
-          payload: res.data
-        });
-        // dispatch(loadUser(history));
-      }
-
-    } else {
-      history.push('/register');
-    }
-  } catch (err) {
-    let errors;
-
-    if (err.response)
-      if (err.response.data)
-        errors = err.response.data.errors;
-
-    if (errors) {
-      errors.forEach(error => toast.error(error.msg));
-    }
-    history.push('/');
-  }
-};
-
-// Change User
-export const changeUser = (userid, history) => async dispatch => {
-  try {
-    await api.post('/auth/updateuser', { userid });
-    toast.success('Succefully changed.');
-  } catch (err) {
-    let errors;
-    if (err.response) {
-      if (err.response.data)
-        errors = err.response.data.errors
-    }
-
-    if (errors) {
-      errors.forEach(error => toast.error(error.msg));
-    }
-  }
-}
-
-// Change UserID
-export const changeEmail = (email, history) => async dispatch => {
-  try {
-    await api.post('/auth/email', { email });
-    toast.success('Succefully changed. You need to verify you email again.');
-  } catch (err) {
-    let errors;
-    if (err.response) {
-      if (err.response.data)
-        errors = err.response.data.errors
-    }
-
-    if (errors) {
-      errors.forEach(error => toast.error(error.msg));
-    }
-  }
-}
 
 export const forgotpassword = (searchkey) => async (dispatch, getState) => {
   try {

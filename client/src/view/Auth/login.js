@@ -25,7 +25,6 @@ function Login() {
     email: "",
     password: "",
   });
-  console.log('process: ', process.env.REACT_APP_CAPCHA)
   const [ recaptcha, setRecaptcha ] = useState(!parseInt(process.env.REACT_APP_CAPCHA));
   const { email, password } = formData;
 

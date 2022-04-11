@@ -43,7 +43,7 @@ function ForgotPassword() {
 
   const handleSubmit = () => {
     if (recaptcha) {
-      dispatch(forgotpassword({email}, history));
+      dispatch(forgotpassword({ email }));
     }
   }
 
