@@ -90,7 +90,6 @@ export const updateFunndBalance = (data, account_id) => async (dispatch, getStat
 export const updateTempBalance = (data, account_id) => async (dispatch, getState) => {
   try {
     await api.post('/balance/updatetempbalance', data);
-    dispatch(getContractBalance(account_id));
     dispatch(getLogs(account_id));
 
   } catch (err) {
