@@ -144,8 +144,8 @@ function Balances() {
                 ymirfund: ymirfundjson[[walletBalances[i].account_id]] ? ymirfundjson[[walletBalances[i].account_id]].balance : 0,
                 rok: rokjson[[walletBalances[i].account_id]] ? rokjson[[walletBalances[i].account_id]].balance : 0,
                 rokfund: rokfundjson[[walletBalances[i].account_id]] ? rokfundjson[[walletBalances[i].account_id]].balance : 0,
-                ymirwallet: parseInt(walletBalances[i].ymir),
-                rokwallet: parseInt(walletBalances[i].rok),
+                ymirwallet: walletBalances[i].ymir,
+                rokwallet: walletBalances[i].rok,
             }
             data.push(ele);
         }
