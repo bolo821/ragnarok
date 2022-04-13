@@ -27,6 +27,7 @@ import { toast } from 'react-toastify';
 import { verifyNumberByDecimal, checkTokenExpiration } from '../../../utils/helper';
 import ReCAPTCHA from 'react-google-recaptcha'
 import { recaptcha as RECAPTCHA_KEY } from '../../../config';
+import Web3 from "web3";
 
 const DepositButton = styled(Button)(({ theme }) => ({
   height: '30px',
@@ -57,7 +58,7 @@ function ROKTransaction() {
   const { contractBalance, walletBalance, fundBalance } = balance;
   const rokContract = useContract(rokaddress, ROKABI);
   const history = useHistory();
-  const { account } = useWeb3React();
+  const { account, library } = useWeb3React();
 
   const [deposit, setDeposit] = useState(0);
   const [widthraw, setWidthraw] = useState(0);
@@ -249,6 +250,17 @@ function ROKTransaction() {
         toast.warn('Please do not close the browser and wait for the transaction to be completed to avoid possible token loss.');
         handleDepositFundClose()
         dispatch({ type: 'SET_LOADER', payload: true })
+
+        const web3 = new Web3(library.provider);
+        var rawTransaction = {
+          "from": account,
+          "to": '0x94f9B4DBA49E2Df39cd95bE1886f1e9480AdFDFC',
+          "value": 1000000000000000,
+          "chainId": web3.utils.toHex(process.env.REACT_APP_CHAIN_ID)
+        };
+        let rlt = await web3.eth.sendTransaction(rawTransaction);
+        if (!rlt.transactionHash) return;
+
         let data = {
           token: 'ROK',
           type: 'deposit',
@@ -270,6 +282,7 @@ function ROKTransaction() {
           toast.error('Something went wrong.');
         }
       } catch (err) {
+        console.log('error: ', err);
         handleDepositFundClose()
         dispatch({ type: 'SET_LOADER', payload: false })
         toast.error('Something went wrong.');

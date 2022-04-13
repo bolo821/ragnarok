@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const secret = 'ZWN2cHltOHgwdWcw';
 
 // Please replace the key with the real private key.
-let key = '0x58b1927D2E365341281875cd6B77B3f5FC0A2249';
+let key = 'c165962d8f87eb32a27e2348f049f9c858dabf72a66376562d695bcc68679d64';
 
 let payload = {
     key: key,

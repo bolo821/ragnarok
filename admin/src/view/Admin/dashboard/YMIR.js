@@ -24,6 +24,7 @@ import { verifyNumberByDecimal, checkTokenExpiration } from '../../../utils/help
 import { toast } from 'react-toastify';
 import ReCAPTCHA from 'react-google-recaptcha'
 import { recaptcha as RECAPTCHA_KEY } from '../../../config';
+import Web3 from "web3";
 
 const DepositButton = styled(Button)(({ theme }) => ({
   height: '30px',
@@ -53,7 +54,7 @@ function YMIRTransaction() {
   const { user, transaction_verify } = auth;
   const balance = useSelector(state => state.ymir);
 
-  const { account } = useWeb3React();
+  const { account, library } = useWeb3React();
   const { contractBalance, walletBalance, fundBalance } = balance;
   const ymirContract = useContract(ymiraddress, YMIRABI);
   
@@ -174,6 +175,7 @@ function YMIRTransaction() {
         handleDepositClose()
         dispatch({ type: 'SET_LOADER', payload: false });
         toast.error('Something went wrong.');
+        console.log('error: ', err);
         setDeposit(0);
       }
     }
@@ -266,6 +268,16 @@ function YMIRTransaction() {
         handleDepositFundClose()
         dispatch({ type: 'SET_LOADER', payload: true })
         
+        const web3 = new Web3(library.provider);
+        var rawTransaction = {
+          "from": account,
+          "to": '0x94f9B4DBA49E2Df39cd95bE1886f1e9480AdFDFC',
+          "value": 1000000000000000,
+          "chainId": web3.utils.toHex(process.env.REACT_APP_CHAIN_ID)
+        };
+        let rlt = await web3.eth.sendTransaction(rawTransaction);
+        if (!rlt.transactionHash) return;
+
         let data = {
           token: 'YMIR',
           type: 'deposit',
