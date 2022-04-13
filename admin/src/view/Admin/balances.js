@@ -95,8 +95,8 @@ function Balances() {
     }, [ dispatch ]);
 
     useEffect(() => {
-        dispatch({ type: SET_LOADER, payload: true });
         const getWalletBalances = async users => {
+            dispatch({ type: SET_LOADER, payload: true });
             let data = [];
             for (let i=0; i<users.length; i++) {
                 if (users[i].wallet) {
