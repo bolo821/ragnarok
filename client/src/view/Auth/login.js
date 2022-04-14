@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory, Link } from "react-router-dom";
@@ -10,7 +11,7 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Divider from "@mui/material/Divider";
 import { styled } from "@mui/material/styles";
-import { login } from "../../actions/auth";
+import { login, logout } from "../../actions/auth";
 import { AuthWrapper, AdminBody, AuthButton, AdminTextField, formstyle } from "../../components/adminlayout/LayoutItem";
 
 const LoginBody = styled(Stack)(({ theme }) => ({
@@ -42,6 +43,11 @@ function Login() {
 
   useEffect(() => {
     SOCKET.emit('DISCONNECT');
+
+    window.addEventListener('offline', function(event) {
+      dispatch(logout(history));
+      SOCKET.emit('DISCONNECT');
+    });
   }, []);
 
   return (
