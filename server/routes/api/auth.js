@@ -128,59 +128,73 @@ router.post(
             errors: [{ msg: err.message || "Some error occurred while creating a new user." }]
           });
 
-        if(data) {
+        if (data) {
           return res
             .status(400)
             .json({ errors: [{ msg: 'User already exists' }] });
         }
 
-        User.findOne({ wallet }, async (err, data) => {
-          if (err)
+        User.findOne({ userid }, async (err, data) => {
+          if (err) {
             return res.status(500).json({
-              errors: [{ msg: err.message || "Some error occurred while creating a new user." }]
+              errors: [{ msg: err.message || "Some error occurred while creating a new user." }],
             });
+          }
 
           if (data) {
-            return res
-              .status(400)
-              .json({ errors: [{ msg: 'User with the same wallet already exists' }] });
+            return res.status(400).json({ errors: [{ msg: "User already exists" }] });
           }
-          let newuser;
-          newuser = new User({
-            userid,
-            email,
-            wallet,
-          });
 
-          var hash = crypto.createHash('md5').update(password).digest('hex');
-          newuser.user_pass = hash;
-
-          User.create(newuser, (err, createduser) => {
-            let newwallet = new Wallet({
-              address: wallet,
-              masteraccount: createduser.id
-            })
-
-            Wallet.create(newwallet, (err, createdwallet) => {});
-
-            let newbalance = new AccBalance({
-              account_id: createduser.id,
-              token: 'YMIR'
-            })
-
-            AccBalance.create(newbalance, (err, createdwallet) => {});
-            AccFund.create(newbalance, (err, createdwallet) => {});
-
+          User.findOne({ wallet }, async (err, data) => {
             if (err)
               return res.status(500).json({
-                errors: [{ msg: err.message || "Some error occurred while creating the User." }]
+                errors: [{ msg: err.message || "Some error occurred while creating a new user." }]
               });
-
-            res.json({
-              success: true,
+  
+            if (data) {
+              return res
+                .status(400)
+                .json({ errors: [{ msg: 'User with the same wallet already exists' }] });
+            }
+            let newuser;
+            newuser = new User({
+              userid,
+              email,
+              wallet,
+            });
+  
+            var hash = crypto.createHash('md5').update(password).digest('hex');
+            newuser.user_pass = hash;
+  
+            User.create(newuser, (err, createduser) => {
+              let newwallet = new Wallet({
+                address: wallet,
+                masteraccount: createduser.id
+              })
+  
+              Wallet.create(newwallet, (err, createdwallet) => {});
+  
+              let newbalance = new AccBalance({
+                account_id: createduser.id,
+                token: 'YMIR'
+              })
+  
+              AccBalance.create(newbalance, (err, createdwallet) => {});
+              AccFund.create(newbalance, (err, createdwallet) => {});
+  
+              if (err)
+                return res.status(500).json({
+                  errors: [{ msg: err.message || "Some error occurred while creating the User." }]
+                });
+  
+              res.json({
+                success: true,
+              });
             });
           });
         });
+
+        
       });
     } catch (err) {
       console.error(err.message);
